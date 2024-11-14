@@ -1,14 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const userSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
   email: {
     type: String,
     required: true,
@@ -18,21 +10,24 @@ const userSchema = new Schema({
     type: String,
     min: [6, "Must be atleast 6 characters"]
   },
-  isAdmin: {
+  fullName: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
+  isWorker: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   provider: {
     type: String
   },
   avatar: {
-    type: String
+    type: String,
+    default: '/icons/profile.png'
   },
-  createdAt: {
-    type: Date,
-    default: Date.now()
-  }
-})
+}, {timestamps: true})
 
-const User = model('User', userSchema)
+const User = models.User || model('User', userSchema)
 export default User
