@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  flex-flow: column wrap;
+  z-index: 5;
+}
+
+.navbar {
+  display: block;
+  justify-content: space-between;
+  padding: 0 64px;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 16px
+}
+
+.navbar ul li {
+  padding: 8px 0;
+}
+
+.navbar ul .active {
+  border-bottom: 4px solid var(--primary);
+  color: var(--primary);
+}
+
+.bottomHeader{
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 64px;
+  background-color: var(--secondary);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary);
+  display: flex;
+  gap: 8px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.signIn {
+  padding: 8px;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+}
+
+.postJob {
+  padding: 8px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  border-radius: 4px;
+}
+
+.actions ul {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+}

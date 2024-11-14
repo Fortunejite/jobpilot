@@ -64,6 +64,7 @@
 }
 
 .form input {
+  background-color: transparent;
   border: grey 1px solid;
   border-radius: 8px;
   padding: 8px;
@@ -92,6 +93,7 @@
 }
 
 .password input{
+  border-radius: 0;
   width: 100%;
   border: none;
   padding: 0;
