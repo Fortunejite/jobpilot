@@ -1,6 +1,6 @@
 import mongoose, {Mongoose} from "mongoose";
 
-const url = "mongodb://localhost:27017/jobpilot"
+const url = process.env.MONGODB_URI!
 
 interface Cached {
   conn: Mongoose | null,

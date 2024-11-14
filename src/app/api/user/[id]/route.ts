@@ -8,8 +8,13 @@ export async function GET(
 ) {
   try {
     await dbConnect();
-  
-    const user = await User.findById(params.id);
+    
+    if (!params.id) {
+      return NextResponse.json({ data: null }, { status: 400 });
+    }
+    const data = await User.findById(params.id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...user } = data?._doc
     return NextResponse.json({ data: user }, { status: 200 });
 
   } catch(e) {

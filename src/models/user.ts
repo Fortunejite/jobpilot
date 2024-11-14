@@ -1,6 +1,19 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, Document, Model } from "mongoose";
 
-const userSchema = new Schema({
+interface IUser {
+  email: string;
+  fullName: string;
+  password?: string;
+  username: string;
+  role: "worker" | "employer";
+  provider?: string;
+  avatar: string;
+  isVerified: boolean;
+}
+
+export interface IUserDocument extends IUser, Document {}
+
+const userSchema: Schema<IUserDocument> = new Schema({
   email: {
     type: String,
     required: true,
@@ -28,7 +41,11 @@ const userSchema = new Schema({
     type: String,
     default: '/icons/profile.png'
   },
+  isVerified: {
+    type: Boolean,
+    default: false
+  }
 }, {timestamps: true})
 
-const User = models.User || model('User', userSchema)
+const User: Model<IUserDocument> = models.User || model<IUserDocument>('User', userSchema)
 export default User
