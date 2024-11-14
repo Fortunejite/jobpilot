@@ -11,6 +11,7 @@ declare module 'next-auth' {
       username: string;
       password?: string;
       avatar?: string;
+      role: "worker" | "employer"
     };
   }
 
@@ -21,6 +22,7 @@ declare module 'next-auth' {
     username: string;
     password?: string;
     avatar?: string;
+    role: "worker" | "employer"
   }
 }
 
@@ -32,5 +34,6 @@ declare module 'next-auth/jwt' {
     username: string;
     password?: string;
     avatar?: string;
+    role: "worker" | "employer"
   }
 }

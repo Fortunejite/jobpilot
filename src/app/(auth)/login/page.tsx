@@ -67,7 +67,7 @@ const Login = () => {
         <BriefcaseBusiness height={32} width={32} /> <h1>Jobpilot</h1>
       </header>
       <main className={styles.main}>
-        <h1>Create account</h1>
+        <h1>Sign In</h1>
         <p>
           Dont have an account? <Link href={'/register'}>Create Account</Link>
         </p>

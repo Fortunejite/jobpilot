@@ -38,6 +38,7 @@ const option: NextAuthConfig = {
           fullName: user.fullName,
           avatar: user.avatar,
           username: user.username,
+          role: user.role,
         } as unknown as User;
       },
     }),
@@ -82,6 +83,7 @@ const option: NextAuthConfig = {
           token.avatar = user.avatar || '/icons/profile.png';
           token.fullName = user.fullName;
           token.username = user.username;
+          token.role = user.role;
         }
       }
 
@@ -94,6 +96,7 @@ const option: NextAuthConfig = {
         session.user.avatar = token.avatar;
         session.user.fullName = token.fullName;
         session.user.username = token.username;
+        session.user.role = token.role;
       }
 
       return session;

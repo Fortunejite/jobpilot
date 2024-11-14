@@ -16,9 +16,10 @@ const userSchema = new Schema({
   username: {
     type: String,
   },
-  isWorker: {
-    type: Boolean,
-    default: true,
+  role: {
+    type: String,
+    enum: ["worker", "employer"],
+    required: true
   },
   provider: {
     type: String

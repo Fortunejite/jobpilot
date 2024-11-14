@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  padding: 0 64px;
+}
+
+.sideBar {
+  padding: 16px 0;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  width: 30%;
+}
+
+.sideBar p {
+  padding-left: 16px;
+}
+
+.tabs {
+  list-style: none;
+}
+
+.tabs span {
+  font-weight: bold;
+}
+
+.tabs li {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.active {
+  color: var(--primary);
+  background-color: var(--accent);
+  border-left: 4px solid var(--primary);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+  .container main {
+    padding: 16px;
+  }
+}

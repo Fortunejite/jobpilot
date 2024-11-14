@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       fullName,
       username,
       password: hashedPassword,
-      isWorker,
+      role: isWorker ? 'worker' : 'employer',
     });
     await user.save();
     return NextResponse.json({ msg: 'signup successful' }, { status: 201 });

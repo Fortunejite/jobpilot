@@ -7,23 +7,87 @@ import styles from './navbar.module.css';
 import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
-  const links = [
+
+  interface Link {
+    name: string;
+    link: string;
+    status: 'both' | 'auth' | 'no-auth';
+    role: 'any' | 'worker' | 'employer';
+  }
+
+  const links: Link[] = [
     {
       name: 'Home',
       link: '/',
+      status: 'both',
+      role: 'any',
     },
     {
       name: 'Find Job',
       link: '/findJob',
+      status: 'no-auth',
+      role: 'any',
+    },
+    {
+      name: 'Find Job',
+      link: '/findJob',
+      status: 'auth',
+      role: 'worker',
+    },
+    {
+      name: 'Find Candidates',
+      link: '/findCandidates',
+      status: 'auth',
+      role: 'employer',
+    },
+    {
+      name: 'Find Employers',
+      link: '/findEmployers',
+      status: 'auth',
+      role: 'worker',
     },
     {
       name: 'Employers',
       link: '/employers',
+      status: 'no-auth',
+      role: 'any',
     },
     {
       name: 'Candidates',
       link: 'candidates',
+      status: 'no-auth',
+      role: 'any',
     },
+    {
+      name: 'Dashboard',
+      link: '/dashboard',
+      status: 'auth',
+      role: 'any',
+    },
+    {
+      name: 'My Jobs',
+      link: '/myJobs',
+      status: 'auth',
+      role: 'employer',
+    },
+    {
+      name: "Applications",
+      link: '/applications',
+      status: 'auth',
+      role: 'employer',
+    },
+    {
+      name: 'Job Alerts',
+      link: '/jobAlerts',
+      status: 'auth',
+      role: 'worker',
+    },
+    {
+      name: 'Customer Support',
+      link: '/support',
+      status: 'both',
+      role: 'any',
+    }
   ];
 
   const authenticatedActions = [
@@ -47,13 +111,16 @@ const Navbar = () => {
     <header className={styles.container}>
       <nav className={styles.navbar}>
         <ul>
-          {links.map((link) => (
-            <Link key={link.name} href={link.link}>
-              <li className={link.link === pathname ? styles.active : ''}>
-                {link.name}
-              </li>
-            </Link>
-          ))}
+          {links.map((link) => {
+            if (!user && link.status === 'auth') return null;
+            if (user && link.status === 'no-auth') return null;
+            if (link.role !== 'any' && user?.role !== link.role) return null;
+            return <Link key={link.name} href={link.link}>
+            <li className={link.link === pathname ? styles.active : ''}>
+              {link.name}
+            </li>
+          </Link>
+          })}
         </ul>
       </nav>
       <div className={styles.bottomHeader}>
