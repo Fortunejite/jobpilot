@@ -12,7 +12,7 @@ export async function GET(
     if (!params.id) {
       return NextResponse.json({ data: null }, { status: 400 });
     }
-    const data = await User.findById(params.id);
+    const data = await User.findById(params.id) as any;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...user } = data?._doc
     return NextResponse.json({ data: user }, { status: 200 });

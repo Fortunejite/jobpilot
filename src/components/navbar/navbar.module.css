@@ -8,6 +8,7 @@
   display: block;
   justify-content: space-between;
   padding: 0 64px;
+  background-color: var(--background);
 }
 
 .navbar ul {
@@ -30,6 +31,7 @@
   justify-content: space-between;
   padding: 16px 64px;
   background-color: var(--secondary);
+  border-bottom: 1px solid #00000047;
 }
 
 .logo {

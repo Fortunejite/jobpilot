@@ -1,9 +1,7 @@
 import { Schema, model, models, Document, Model } from 'mongoose';
 
-interface IWorker {
+interface IEmployer {
   userId: Schema.Types.ObjectId;
-  exprience: string;
-  education: string;
   profile: string;
   title: string;
   website: string;
@@ -16,13 +14,16 @@ interface IWorker {
   address: string;
   biography: string;
   links: {
-    [x: string]: string;
-  };
+    facebook?: string;
+    twitter?: string;
+    linkedIn?: string;
+    instagram?: string;
+  }[];
 }
 
-export interface IWorkerDocument extends IWorker, Document {}
+export interface IEmployerDocument extends IEmployer, Document {}
 
-const workerSchema: Schema<IWorkerDocument> = new Schema(
+const employerSchema: Schema<IEmployerDocument> = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -33,12 +34,6 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
     profile: {
       type: String,
       default: '/icons/profile.png',
-    },
-    exprience: {
-      type: String,
-    },
-    education: {
-      type: String,
     },
     title: {
       type: String,
@@ -54,11 +49,9 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female']
     },
     maritalStatus: {
       type: String,
-      enum: ['single', 'married', 'divorced']
     },
     address: {
       type: String,
@@ -67,13 +60,19 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
       type: String,
     },
     links: {
-      type: Map,
-      of: String,
+      type: [
+        {
+          facebook: String,
+          twitter: String,
+          linkedIn: String,
+          instagram: String,
+        },
+      ],
     },
   },
   { timestamps: true },
 );
 
-const Worker: Model<IWorkerDocument> =
-  models.Worker || model<IWorkerDocument>('Worker', workerSchema);
-export default Worker;
+const Employer: Model<IEmployerDocument> =
+  models.Employer || model<IEmployerDocument>('Employer', employerSchema);
+export default Employer;

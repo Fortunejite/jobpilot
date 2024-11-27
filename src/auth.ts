@@ -6,6 +6,7 @@ import type { NextAuthConfig, User } from 'next-auth';
 import { compare } from 'bcrypt';
 import { object, string } from 'zod';
 import UserModel from './models/user';
+import dbConnect from './lib/mongodb';
 
 const userObject = object({
   email: string().email({ message: 'Invalid email address' }),
@@ -25,6 +26,7 @@ const option: NextAuthConfig = {
       credentials: {},
       authorize: async (credentials) => {
         const { email, password } = userObject.parse(credentials);
+        await dbConnect()
         const user = await UserModel.findOne({ email });
         if (!user) {
           return null;
