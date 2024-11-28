@@ -7,7 +7,6 @@ interface IUser {
   username: string;
   role: "worker" | "employer";
   provider?: string;
-  avatar: string;
   isVerified: boolean;
 }
 
@@ -36,10 +35,6 @@ const userSchema: Schema<IUserDocument> = new Schema({
   },
   provider: {
     type: String
-  },
-  avatar: {
-    type: String,
-    default: '/icons/profile.png'
   },
   isVerified: {
     type: Boolean,

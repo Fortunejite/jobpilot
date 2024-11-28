@@ -8,17 +8,32 @@
 
 .profile {
   flex: 1 calc(30% - 16px);
+  display: flex;
+  flex-flow: row wrap;
 }
 
+.wrapper{
+
+}
 .dragDrop {
-  height: 80%;
-  width: 100%;
+  border-radius: 8px;
+  padding: 32px 16px;
   border: 1px dashed var(--foreground);
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
+}
+
+.preview {
+  margin-top: 20px;
+}
+
+.preview img {
+  width: 150px;
+  height: auto;
+  border-radius: 10px;
 }
 
 .info {
@@ -78,3 +93,80 @@
   color: var(--secondary)
 }
 
+.addCV {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  border: 1px dashed var(--foreground);
+  cursor: pointer;
+  width: fit-content;
+  padding: 16px;
+  border-radius: 8px;
+  color: var(--text)
+}
+
+.addCV svg {
+  color: var(--primary);
+}
+
+.cvList{
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+}
+
+.cvList .cv {
+  /* width: 300px; */
+}
+.cv {
+  width: fit-content;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 1px solid var(--foreground);
+  padding: 16px;
+  border-radius: 8px;
+}
+.cv p {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 300px;
+  display: block
+}
+
+.cv svg {
+  color: var(--primary);
+}
+.modal .entry {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
+.footer button {
+  padding: 8px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+.footer .cancleBtn {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+.modal {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
+}

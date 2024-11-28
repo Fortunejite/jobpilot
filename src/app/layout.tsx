@@ -34,6 +34,7 @@ export default function RootLayout({
         {/* <Navbar /> */}
         <ToastContainer />
         {children}
+        <div id="modal-root"></div>
       </Providers>
       </body>
     </html>

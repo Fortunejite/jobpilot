@@ -38,7 +38,6 @@ const option: NextAuthConfig = {
           _id: user._id,
           email: user.email,
           fullName: user.fullName,
-          avatar: user.avatar,
           username: user.username,
           role: user.role,
         } as unknown as User;
@@ -57,7 +56,6 @@ const option: NextAuthConfig = {
               fullName,
               username,
               provider: account?.provider,
-              avatar: image,
             });
 
             await newUser.save();
@@ -65,14 +63,12 @@ const option: NextAuthConfig = {
             if (newUser) {
               token.id = newUser._id.toString();
               token.email = email;
-              token.avatar = image || '/icons/profile.png';
               token.fullName = fullName;
               token.username = username;
             }
           } else {
             token.id = existingUser._id.toString();
             token.email = email;
-            token.avatar = image || '/icons/profile.png';
             token.fullName = existingUser?.fullName;
             token.username = existingUser?.username;
           }
@@ -82,7 +78,6 @@ const option: NextAuthConfig = {
         if (user) {
           token._id = user._id.toString();
           token.email = user.email || '';
-          token.avatar = user.avatar || '/icons/profile.png';
           token.fullName = user.fullName;
           token.username = user.username;
           token.role = user.role;
@@ -95,7 +90,6 @@ const option: NextAuthConfig = {
       if (session?.user) {
         session.user._id = token._id;
         session.user.email = token.email || '';
-        session.user.avatar = token.avatar;
         session.user.fullName = token.fullName;
         session.user.username = token.username;
         session.user.role = token.role;

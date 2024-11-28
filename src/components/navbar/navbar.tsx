@@ -105,6 +105,7 @@ const Navbar = () => {
 
   const session = useSession();
   const user = session.data?.user;
+  
 
   const pathname = usePathname();
   return (
