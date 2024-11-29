@@ -78,6 +78,13 @@
   gap: 8px;
 
 }
+
+.markdown {
+  flex: 1 1 100%;
+  margin: '0 auto';
+  padding: '20px';
+}
+
 .entry {
   display: flex;
   flex-flow: column wrap;

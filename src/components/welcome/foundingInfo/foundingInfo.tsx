@@ -1,10 +1,10 @@
 import { IEmployerDocument } from '@/models/employer';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import styles from './foundingInfo.module.css';
 import { ArrowRight, Link } from 'lucide-react';
-import ReactMde, { Command, TextState, TextApi } from "react-mde";
-import ReactMarkdown from "react-markdown";
-import "react-mde/lib/styles/css/react-mde-all.css";
+import ReactMde, { Command } from 'react-mde';
+import ReactMarkdown from 'react-markdown';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const foundingInfo = ({
   handleSubmit,
@@ -18,8 +18,12 @@ const foundingInfo = ({
   setFormData: Dispatch<SetStateAction<IEmployerDocument>>;
 }) => {
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | string,
   ) => {
+    if (typeof e === 'string') {
+      setFormData((prev) => ({ ...prev, vision: e } as IEmployerDocument));
+      return;
+    }
     const id = e.target.id;
     const value = e.target.value;
     setFormData(
@@ -30,27 +34,25 @@ const foundingInfo = ({
         } as IEmployerDocument),
     );
   };
-  const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+  const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
 
-const boldCommand: Command = {
-    name: "bold",
+  const boldCommand: Command = {
     icon: () => <strong>B</strong>,
-    execute: (state: TextState, api: TextApi) => {
-      const { selectedText } = state;
-      api.replaceSelection(`**${selectedText || "bold text"}**`);
+    execute: ({initialState, textApi}) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`**${selectedText || 'bold text'}**`);
     },
   };
 
   // Italic Command in TypeScript
   const italicCommand: Command = {
-    name: "italic",
     icon: () => <em>I</em>,
-    execute: (state: TextState, api: TextApi) => {
-      const { selectedText } = state;
-      api.replaceSelection(`*${selectedText || "italic text"}*`);
+    execute: ({ initialState, textApi }) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`*${selectedText || 'italic text'}*`);
     },
   };
-  
+
   return (
     <form
       onSubmit={(e) => {
@@ -71,7 +73,9 @@ const boldCommand: Command = {
           <option value={'NGO'}>NGO</option>
           <option value={'Public'}>Public</option>
           <option value={'Private'}>Private</option>
-          <option value={'International Agencies'}>International Agencies</option>
+          <option value={'International Agencies'}>
+            International Agencies
+          </option>
           <option value={'Semi Government'}>Semi Government</option>
         </select>
       </div>
@@ -121,31 +125,36 @@ const boldCommand: Command = {
         <label id='vision'>Company Vision</label>
         <input id='vision' value={formData.vision} onChange={handleChange} />
       </div>
+      <div className={styles.markdown}>
+        <label id='vision'>Company Vision</label>
+        <ReactMde
+          value={formData.vision}
+          onChange={handleChange}
+          selectedTab={selectedTab}
+          onTabChange={setSelectedTab}
+          generateMarkdownPreview={(markdown) =>
+            Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)
+          }
+          toolbarCommands={[['bold', 'italic']]}
+          commands={{
+            bold: boldCommand,
+            italic: italicCommand,
+          }}
+        />
+      </div>
       <div className={styles.buttons}>
-        <button type='button' onClick={previous} className={`${styles.btn} ${styles.back}`}>Previous</button>
-        <button className={styles.btn}>Next <ArrowRight height={18} width={18} /></button>
+        <button
+          type='button'
+          onClick={previous}
+          className={`${styles.btn} ${styles.back}`}
+        >
+          Previous
+        </button>
+        <button className={styles.btn}>
+          Next <ArrowRight height={18} width={18} />
+        </button>
       </div>
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
-      <h1>Markdown Editor with TypeScript</h1>
-      <ReactMde
-        value={value}
-        onChange={setValue}
-        selectedTab={selectedTab}
-        onTabChange={setSelectedTab}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)
-        }
-        toolbarCommands={[["bold", "italic"]]}
-        commands={{
-          bold: boldCommand,
-          italic: italicCommand,
-        }}
-      />
-      <h2>Preview</h2>
-      <div style={{ border: "1px solid #ccc", padding: "10px" }}>
-        <ReactMarkdown>{value}</ReactMarkdown>
-      </div>
-    </div>
+      
     </form>
   );
 };

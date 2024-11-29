@@ -12,6 +12,12 @@
   flex: 1 calc(50% - 8px);
 }
 
+.markdown {
+  flex: 1 1 100%;
+  margin: '0 auto';
+  padding: '20px';
+}
+
 .entry input, .entry select {
   border-radius: 4px;
   border: 1px solid grey;

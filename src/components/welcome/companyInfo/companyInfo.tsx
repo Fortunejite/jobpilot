@@ -1,9 +1,12 @@
 import { IEmployerDocument } from '@/models/employer';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import styles from './companyInfo.module.css';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import ReactMde, { Command } from 'react-mde';
+import ReactMarkdown from 'react-markdown';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const CompanyInfo = ({
   handleSubmit,
@@ -23,8 +26,12 @@ const CompanyInfo = ({
   setBanner: Dispatch<SetStateAction<FileWithPath | undefined>>;
 }) => {
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | string,
   ) => {
+    if (typeof e === 'string') {
+      setFormData((prev) => ({ ...prev, about: e } as IEmployerDocument));
+      return;
+    }
     const id = e.target.id;
     const value = e.target.value;
     setFormData(
@@ -34,6 +41,25 @@ const CompanyInfo = ({
           [id]: value,
         } as IEmployerDocument),
     );
+  };
+
+  const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
+
+  const boldCommand: Command = {
+    icon: () => <strong>B</strong>,
+    execute: ({ initialState, textApi }) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`**${selectedText || 'bold text'}**`);
+    },
+  };
+
+  // Italic Command in TypeScript
+  const italicCommand: Command = {
+    icon: () => <em>I</em>,
+    execute: ({ initialState, textApi }) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`*${selectedText || 'italic text'}*`);
+    },
   };
 
   const onBannerDrop = (acceptedFiles: FileWithPath[]) => {
@@ -135,9 +161,22 @@ const CompanyInfo = ({
             onChange={handleChange}
           />
         </div>
-        <div className={styles.entry}>
-          <label id='about'>About Us</label>
-          <input id='about' value={formData.about} onChange={handleChange} />
+        <div className={styles.markdown}>
+          <label id='vision'>About Us</label>
+          <ReactMde
+            value={formData.about}
+            onChange={handleChange}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            generateMarkdownPreview={(markdown) =>
+              Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)
+            }
+            toolbarCommands={[['bold', 'italic']]}
+            commands={{
+              bold: boldCommand,
+              italic: italicCommand,
+            }}
+          />
         </div>
         <button className={styles.btn}>
           <span>Next</span>

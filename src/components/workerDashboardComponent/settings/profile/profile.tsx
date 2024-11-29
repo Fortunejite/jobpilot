@@ -3,6 +3,10 @@ import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import ReactMde, { Command } from 'react-mde';
+import ReactMarkdown from 'react-markdown';
+import 'react-mde/lib/styles/css/react-mde-all.css';
+import { IEmployerDocument } from '@/models/employer';
 
 const Profile = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
@@ -18,8 +22,12 @@ const Profile = ({ user }: { user: null | worker }) => {
   if (!formData) return null;
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
-  ) =>
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | string,
+  ) => {
+    if (typeof e === 'string') {
+      setFormData((prev) => ({ ...prev, biography: e } as worker));
+      return;
+    }
     setFormData((prev) => {
       if (e.target.name === 'user') {
         return {
@@ -36,6 +44,26 @@ const Profile = ({ user }: { user: null | worker }) => {
         } as unknown as worker;
       }
     });
+  };
+
+  const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
+
+  const boldCommand: Command = {
+    icon: () => <strong>B</strong>,
+    execute: ({ initialState, textApi }) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`**${selectedText || 'bold text'}**`);
+    },
+  };
+
+  // Italic Command in TypeScript
+  const italicCommand: Command = {
+    icon: () => <em>I</em>,
+    execute: ({ initialState, textApi }) => {
+      const { selectedText } = initialState;
+      textApi.replaceSelection(`*${selectedText || 'italic text'}*`);
+    },
+  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -136,12 +164,21 @@ const Profile = ({ user }: { user: null | worker }) => {
             <option value={'Software Engineer'}>Software Engineer</option>
           </select>
         </div>
-        <div className={styles.entry}>
-          <label id='biography'>Biography</label>
-          <input
-            id='biography'
+        <div className={styles.markdown}>
+          <label id='vision'>About Us</label>
+          <ReactMde
             value={formData.biography}
             onChange={handleChange}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            generateMarkdownPreview={(markdown) =>
+              Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)
+            }
+            toolbarCommands={[['bold', 'italic']]}
+            commands={{
+              bold: boldCommand,
+              italic: italicCommand,
+            }}
           />
         </div>
         <button disabled={loading} className={styles.btn}>
