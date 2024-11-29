@@ -13,7 +13,7 @@
   display: flex;
   flex-flow: column wrap;
   gap: 8px;
-  width: 30%;
+  width: 20%;
   border-right: 1px solid #00000047;
 }
 

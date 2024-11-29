@@ -2,11 +2,11 @@
 
 import { Bookmark, BriefcaseBusiness, CirclePlus, CircleUserRound, Layers, List, Settings } from 'lucide-react';
 import styles from './workerDashboard.module.css';
-import AppliedJobs from '../../../components/workerDashboardComponent/appliedJobs/appliedJobs';
-import Overview from '../../../components/workerDashboardComponent/overview/overview';
-import FavouriteJobs from '../../../components/workerDashboardComponent/favouriteJobs/favouriteJob';
-import JobAlerts from '../../../components/workerDashboardComponent/jobAlert/jobAlert';
-import Setting from '../../../components/workerDashboardComponent/settings/settings';
+import AppliedJobs from '../../../../components/workerDashboardComponent/appliedJobs/appliedJobs';
+import Overview from '../../../../components/workerDashboardComponent/overview/overview';
+import FavouriteJobs from '../../../../components/workerDashboardComponent/favouriteJobs/favouriteJob';
+import JobAlerts from '../../../../components/workerDashboardComponent/jobAlert/jobAlert';
+import Setting from '../../../../components/workerDashboardComponent/settings/settings';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';

@@ -60,11 +60,6 @@ export async function POST(request: Request) {
         userId: user._id,
       });
       await worker.save();
-    } else {
-      const employer = new Employer({
-        userId: user._id,
-      });
-      await employer.save();
     }
     return NextResponse.json({ msg: 'signup successful' }, { status: 201 });
   } catch (e) {

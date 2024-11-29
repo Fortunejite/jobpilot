@@ -52,22 +52,12 @@
   outline: none;
 }
 
-.buttons {
-  width: 100%;
-  display: flex;
-  gap: 8px;
-}
-
 .btn {
   border-radius: 4px;
   padding: 16px;
   border: none;
   background-color: var(--primary);
   color: var(--secondary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
 }
 
 .rmBtn {
@@ -86,10 +76,4 @@
   border-radius: 4px;
   border: none;
   gap: 8px;
-}
-
-
-.back {
-  background-color: var(--accent);
-  color: var(--primary);
 }

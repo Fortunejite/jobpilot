@@ -1,0 +1,23 @@
+.container {
+  height: 46px;
+  width: 350px;
+  background-color: var(--secondary);
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.filler {
+  border-radius: 5px;
+  height: 100%;
+  background-color: var(--primary);
+  text-align: center;
+  line-height: 30px;
+  color: var(--text);
+  transition: width 0.5s ease-in-out;
+}

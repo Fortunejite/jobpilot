@@ -68,7 +68,7 @@ const Signup = () => {
       setLoading(false)
       return
     }
-    signIn('credentials', {email: formData.email, password: formData.password, callbackUrl: '/'})
+    signIn('credentials', {email: formData.email, password: formData.password, callbackUrl: data.isWorker ? '/' : '/welcome'})
     toast.success(res.data.msg)
   } catch (e) {
       setLoading(false)

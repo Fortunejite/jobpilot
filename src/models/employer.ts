@@ -2,23 +2,22 @@ import { Schema, model, models, Document, Model } from 'mongoose';
 
 interface IEmployer {
   userId: Schema.Types.ObjectId;
-  profile: string;
-  title: string;
+  logo: string;
+  banner: string;
+  companyName: string;
+  about: string;
+  orginizationType: string;
+  industryType: string;
+  teamSize: number;
+  yearOfEstablishment: Date;
   website: string;
-  resume: string[];
-  nationality: string;
-  dateOfBirth: Date;
-  gender: 'Male' | 'Female';
-  maritalStatus: 'Single' | 'Married' | 'Divorced';
+  vision: string;
+  links: {
+    [x: string]: string;
+  };
   phoneNumber: string;
   address: string;
-  biography: string;
-  links: {
-    facebook?: string;
-    twitter?: string;
-    linkedIn?: string;
-    instagram?: string;
-  }[];
+  email: string;
 }
 
 export interface IEmployerDocument extends IEmployer, Document {}
@@ -31,43 +30,53 @@ const employerSchema: Schema<IEmployerDocument> = new Schema(
       required: true,
       unique: true,
     },
-    profile: {
+    logo: {
       type: String,
-      default: '/icons/profile.png',
+      required: true,
     },
-    title: {
+    banner: {
+      type: String,
+      required: true,
+    },
+    companyName: {
+      required: true,
       type: String,
     },
     website: {
       type: String,
+      required: true,
     },
-    resume: {
-      type: [String],
+    about: {
+      type: String,
+      required: true,
     },
     phoneNumber: {
       type: String,
+      required: true,
     },
-    gender: {
+    industryType: {
       type: String,
+      required: true,
     },
-    maritalStatus: {
+    orginizationType: {
       type: String,
+      required: true,
     },
     address: {
       type: String,
+      required: true,
     },
-    biography: {
+    vision: {
+      required: true,
+      type: String,
+    },
+    email: {
+      required: true,
       type: String,
     },
     links: {
-      type: [
-        {
-          facebook: String,
-          twitter: String,
-          linkedIn: String,
-          instagram: String,
-        },
-      ],
+      type: Map,
+      of: String,
     },
   },
   { timestamps: true },
