@@ -14,8 +14,41 @@
 
 .markdown {
   flex: 1 1 100%;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
   margin: '0 auto';
   padding: '20px';
+}
+
+.date {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  flex: 1 calc(50% - 8px);
+  padding: '20px';
+}
+
+.dateWrap {
+  display: flex;
+  margin: '0 auto';
+  align-items: center;
+  border-radius: 4px;
+  gap: 8px;
+  border: 1px solid grey;
+  padding: 1rem;
+}
+
+.dateWrap .icon {
+  color: var(--primary);
+}
+.dateWrap .datePicker {
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+.dateWrap input:focus {
+  outline: none;
 }
 
 .entry input, .entry select {

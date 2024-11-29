@@ -6,7 +6,9 @@ import { toast } from 'react-toastify';
 import ReactMde, { Command } from 'react-mde';
 import ReactMarkdown from 'react-markdown';
 import 'react-mde/lib/styles/css/react-mde-all.css';
-import { IEmployerDocument } from '@/models/employer';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Calendar } from 'lucide-react';
 
 const Profile = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
@@ -21,6 +23,9 @@ const Profile = ({ user }: { user: null | worker }) => {
   >(null);
   if (!formData) return null;
 
+  const handleDateChange = (date: Date | null) => {
+    setFormData((prev) => ({ ...prev, dateOfBirth: date } as worker));
+  };
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | string,
   ) => {
@@ -67,7 +72,7 @@ const Profile = ({ user }: { user: null | worker }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    
     const res = await axios.patch(`/api/workers/${user?._id}`, formData);
     if (res.status != 201) {
       setLoading(false);
@@ -121,6 +126,22 @@ const Profile = ({ user }: { user: null | worker }) => {
               ))}
           </select>
         </div>
+        <div className={styles.date}>
+          <label id='Date of Birth'>Date of Birth</label>
+          <div className={styles.dateWrap}>
+            <DatePicker
+              selected={formData.dateOfBirth}
+              onChange={handleDateChange}
+              dateFormat='dd-MM-yyyy'
+              placeholderText='dd/mm/yyyy'
+              showPopperArrow={false} // Remove the arrow in the popper if not needed
+              isClearable // Add clear button
+              todayButton='Today' // Show "Today" button
+              className={styles.datePicker} // You can style it with your CSS class
+            />
+            <Calendar />
+          </div>
+        </div>
         <div className={styles.entry}>
           <label id='gender'>Gender</label>
           <select
@@ -165,7 +186,7 @@ const Profile = ({ user }: { user: null | worker }) => {
           </select>
         </div>
         <div className={styles.markdown}>
-          <label id='vision'>About Us</label>
+          <label id='vision'>Biography</label>
           <ReactMde
             value={formData.biography}
             onChange={handleChange}

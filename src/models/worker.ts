@@ -81,6 +81,12 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
     profession: {
       type: String,
     },
+    nationality: {
+      type: String,
+    },
+    dateOfBirth: {
+      type: Date,
+    },
     links: {
       type: Map,
       of: String,

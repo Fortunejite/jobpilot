@@ -55,7 +55,6 @@ const Welcome = () => {
     orginizationType: '',
     industryType: '',
     teamSize: 0,
-    yearOfEstablishment: new Date(),
     vision: '',
     links: {},
     logo: '',

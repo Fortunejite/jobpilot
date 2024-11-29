@@ -1,12 +1,12 @@
 import { IEmployerDocument } from '@/models/employer';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import styles from './foundingInfo.module.css';
-import { ArrowRight, Link } from 'lucide-react';
+import { ArrowRight, Calendar, Link } from 'lucide-react';
 import ReactMde, { Command } from 'react-mde';
 import ReactMarkdown from 'react-markdown';
 import 'react-mde/lib/styles/css/react-mde-all.css';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const foundingInfo = ({
   handleSubmit,
@@ -20,8 +20,10 @@ const foundingInfo = ({
   setFormData: Dispatch<SetStateAction<IEmployerDocument>>;
 }) => {
   const handleDateChange = (date: Date | null) => {
-    setFormData((prev) => ({...prev, yearOfEstablishment: date} as IEmployerDocument));
-  }
+    setFormData(
+      (prev) => ({ ...prev, yearOfEstablishment: date } as IEmployerDocument),
+    );
+  };
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> | string,
   ) => {
@@ -43,7 +45,7 @@ const foundingInfo = ({
 
   const boldCommand: Command = {
     icon: () => <strong>B</strong>,
-    execute: ({initialState, textApi}) => {
+    execute: ({ initialState, textApi }) => {
       const { selectedText } = initialState;
       textApi.replaceSelection(`**${selectedText || 'bold text'}**`);
     },
@@ -96,23 +98,22 @@ const foundingInfo = ({
           <option value={'Small'}>Small</option>
         </select>
       </div>
-      <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
-      <h2>Select a Date</h2>
-      <DatePicker
-        selected={selectedDate}
-        onChange={handleDateChange}
-        dateFormat="yyyy-MM-dd"
-        placeholderText="Select a date"
-        showPopperArrow={false} // Remove the arrow in the popper if not needed
-        isClearable // Add clear button
-        todayButton="Today" // Show "Today" button
-        className="custom-input" // You can style it with your CSS class
-      />
-      <p>
-        Selected Date:{" "}
-        {selectedDate ? selectedDate.toLocaleDateString() : "None"}
-      </p>
-    </div>
+      <div className={styles.date}>
+        <label id='Year of Establishment'>Year of Establishment</label>
+        <div className={styles.dateWrap}>
+          <DatePicker
+            selected={formData.yearOfEstablishment}
+            onChange={handleDateChange}
+            dateFormat='dd-MM-yyyy'
+            placeholderText='dd/mm/yyyy'
+            showPopperArrow={false} // Remove the arrow in the popper if not needed
+            isClearable // Add clear button
+            todayButton='Today' // Show "Today" button
+            className={styles.datePicker} // You can style it with your CSS class
+          />
+          <Calendar />
+        </div>
+      </div>
       <div className={styles.entry}>
         <label id='teamSize'>Team Size</label>
         <select
@@ -176,7 +177,6 @@ const foundingInfo = ({
           Next <ArrowRight height={18} width={18} />
         </button>
       </div>
-      
     </form>
   );
 };
