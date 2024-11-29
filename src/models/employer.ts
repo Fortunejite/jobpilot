@@ -74,6 +74,10 @@ const employerSchema: Schema<IEmployerDocument> = new Schema(
       required: true,
       type: String,
     },
+    yearOfEstablishment: {
+      required: true,
+      type: Date,
+    },
     links: {
       type: Map,
       of: String,

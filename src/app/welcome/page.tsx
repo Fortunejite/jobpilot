@@ -7,7 +7,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import styles from './page.module.css';
-import CompanyInfo from '@/components/welcome/companyInfo/CompanyInfo';
+import CompanyInfo from '@/components/welcome/companyInfo/companyInfo';
 import { useState } from 'react';
 import ProgressBar from '@/components/progressBar/progressBar';
 import { IEmployerDocument } from '@/models/employer';
