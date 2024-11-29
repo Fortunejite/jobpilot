@@ -19,6 +19,7 @@ interface IWorker {
   phoneNumber: string;
   address: string;
   biography: string;
+  profession: string;
   links: {
     [x: string]: string;
   };
@@ -75,6 +76,9 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
       type: String,
     },
     biography: {
+      type: String,
+    },
+    profession: {
       type: String,
     },
     links: {

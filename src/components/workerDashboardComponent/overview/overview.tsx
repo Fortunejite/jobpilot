@@ -1,7 +1,5 @@
 'use client'
 
-import { IUserDocument } from "@/models/user";
-import { useSession } from "next-auth/react";
 import { worker } from "@/app/(home)/(authenticated)/dashboard/workerDashboard";
 
 const Overview = ({user}: {user: null | worker}) => {

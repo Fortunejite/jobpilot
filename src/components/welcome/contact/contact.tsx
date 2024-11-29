@@ -1,5 +1,5 @@
 import { IEmployerDocument } from '@/models/employer';
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import styles from './page.module.css';
 import { ArrowRight, Mail } from 'lucide-react';
 
@@ -11,14 +11,12 @@ const Contact = ({
   formData,
   setFormData,
   loading,
-  setLoading
 }: {
   handleSubmit: () => void;
   previous: () => void;
   formData: IEmployerDocument;
   setFormData: Dispatch<SetStateAction<IEmployerDocument>>;
   loading: boolean;
-  setLoading: Dispatch<SetStateAction<boolean>>;
 }) => {
   
   const handleChange = (

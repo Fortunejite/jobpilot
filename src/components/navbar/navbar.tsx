@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, BriefcaseBusiness, CircleUser } from 'lucide-react';
+import { Bell, BriefcaseBusiness } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import styles from './navbar.module.css';
@@ -8,8 +8,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-import { IEmployerDocument } from '@/models/employer';
-import { IWorkerDocument } from '@/models/worker';
 
 interface Link {
   name: string;

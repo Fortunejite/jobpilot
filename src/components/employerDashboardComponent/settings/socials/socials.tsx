@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import styles from './socials.module.css';
@@ -39,14 +39,14 @@ const links = [
 const Socials = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
   const [loading, setLoading] = useState(false);
+  const [activeLinks, setActiveLinks] = useState(
+    formData?.links ? links.filter((link) => link.name in formData.links) : [],
+  );
   if (!formData) return null;
   if (!formData?.links) {
     formData.links = {};
     setFormData(formData);
   }
-  const [activeLinks, setActiveLinks] = useState(
-    formData.links ? links.filter((link) => link.name in formData.links) : [],
-  );
 
   const renderLinks = () => {
     return Object.entries(formData.links).map(([key, value], index) => {
@@ -66,7 +66,7 @@ const Socials = ({ user }: { user: null | worker }) => {
                 <option value={key}>{key}</option>
                 {}
                 {getAvailableLinks().map((link) => {
-                  return <option value={link.name}>{link.name}</option>;
+                  return <option key={link.name} value={link.name}>{link.name}</option>;
                 })}
               </select>
               <input

@@ -1,12 +1,20 @@
 import styles from './profile.module.css';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const Profile = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
   const [loading, setLoading] = useState(false);
+  const [countries, setCountries] = useState<
+    | null
+    | {
+        name: {
+          common: string;
+        };
+      }[]
+  >(null);
   if (!formData) return null;
 
   const handleChange = (
@@ -37,10 +45,35 @@ const Profile = ({ user }: { user: null | worker }) => {
       setLoading(false);
       return toast.error('An error occured');
     }
+
     toast.success('Updated successfully.');
     setLoading(false);
     return;
   };
+
+  useEffect(() => {
+    const getCountries = async () => {
+      try {
+        const res = await axios.get(
+          'https://restcountries.com/v3.1/all?fields=name',
+        );
+        setCountries(res.data);
+        setCountries((prev) => {
+          if (!prev) return null;
+          return prev.sort((a, b) => {
+            const nameA = a.name.common.toLowerCase();
+            const nameB = b.name.common.toLowerCase();
+            return nameA.localeCompare(nameB);
+          });
+        });
+        console.log(countries);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getCountries();
+  }, []);
+
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -52,8 +85,12 @@ const Profile = ({ user }: { user: null | worker }) => {
             onChange={handleChange}
           >
             <option value={undefined}>Select...</option>
-            <option value={'Nigeria'}>Nigeria</option>
-            <option value={'Ghana'}>Ghana</option>
+            {countries &&
+              countries.map((country) => (
+                <option key={country.name.common} value={country.name.common}>
+                  {country.name.common}
+                </option>
+              ))}
           </select>
         </div>
         <div className={styles.entry}>
@@ -79,6 +116,24 @@ const Profile = ({ user }: { user: null | worker }) => {
             <option value={'single'}>Single</option>
             <option value={'married'}>Married</option>
             <option value={'divorced'}>Divorced</option>
+          </select>
+        </div>
+        <div className={styles.entry}>
+          <label id='profession'>Profession</label>
+          <select
+            id='profession'
+            value={formData?.profession || undefined}
+            onChange={handleChange}
+          >
+            <option value={undefined}>Select...</option>
+            <option value={'Accountant'}>Accountant</option>
+            <option value={'Actor'}>Actor</option>
+            <option value={'Artist'}>Artist</option>
+            <option value={'Cashier'}>Cashier</option>
+            <option value={'Dentist'}>Dentist</option>
+            <option value={'Electrian'}>Electrian</option>
+            <option value={'Lawyer'}>Lawyer</option>
+            <option value={'Software Engineer'}>Software Engineer</option>
           </select>
         </div>
         <div className={styles.entry}>

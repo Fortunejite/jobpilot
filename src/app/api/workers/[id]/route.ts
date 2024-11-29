@@ -2,7 +2,6 @@ import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/user';
 import Worker from '@/models/worker';
-import { getSession } from 'next-auth/react';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(

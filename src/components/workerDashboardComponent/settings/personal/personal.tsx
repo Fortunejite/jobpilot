@@ -253,7 +253,14 @@ const Personal = ({ user }: { user: null | worker }) => {
               onChange={handleChange}
             >
               <option value={undefined}>Select...</option>
+              <option value={0}>Fresher</option>
               <option value={1}>1 year</option>
+              <option value={2}>2 year</option>
+              <option value={3}>3+ year</option>
+              <option value={5}>5+ year</option>
+              <option value={8}>8+ year</option>
+              <option value={10}>10+ year</option>
+              <option value={15}>15+ year</option>
             </select>
           </div>
           <div className={styles.entry}>

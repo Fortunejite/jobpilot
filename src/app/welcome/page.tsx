@@ -205,7 +205,6 @@ const Welcome = () => {
           formData={formData}
           setFormData={setFormData}
           loading={loading}
-          setLoading={setLoading}
         />
       ),
     },

@@ -1,10 +1,13 @@
-import { IUserDocument } from "@/models/user"
-import { worker } from "@/app/(home)/(authenticated)/dashboard/workerDashboard"
+import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 
-const appliedJobs = ({user}: {user: null | worker}) => {return (
-  <div>
+const appliedJobs = ({ user }: { user: null | worker }) => {
+  console.log(user);
+  
+  return (
+    <div>
       <h1>Applied Jobs</h1>
-  </div>
-)}
+    </div>
+  );
+};
 
-export default appliedJobs
+export default appliedJobs;

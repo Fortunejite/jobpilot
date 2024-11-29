@@ -76,7 +76,7 @@ const Socials = ({
                 <option value={key}>{key}</option>
                 {}
                 {getAvailableLinks().map((link) => {
-                  return <option value={link.name}>{link.name}</option>;
+                  return <option key={link.name} value={link.name}>{link.name}</option>;
                 })}
               </select>
               <input

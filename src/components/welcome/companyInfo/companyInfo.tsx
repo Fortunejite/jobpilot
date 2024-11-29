@@ -1,5 +1,5 @@
 import { IEmployerDocument } from '@/models/employer';
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import styles from './companyInfo.module.css';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import Image from 'next/image';

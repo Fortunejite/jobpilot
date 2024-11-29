@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcrypt';
 import { ZodError, boolean, object, string } from 'zod';
 import Worker from '@/models/worker';
-import Employer from '@/models/employer';
 
 export async function GET(request: NextRequest) {
   try {

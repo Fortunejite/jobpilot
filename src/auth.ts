@@ -47,7 +47,7 @@ const option: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user, account }) {
       if (account?.provider === 'google' || account?.provider === 'facebook') {
-        const { email, image, fullName, username } = user;
+        const { email, fullName, username } = user;
         if (email) {
           const existingUser = await UserModel.findOne({ email });
           if (!existingUser) {
