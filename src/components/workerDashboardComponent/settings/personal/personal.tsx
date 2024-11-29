@@ -204,25 +204,32 @@ const Personal = ({ user }: { user: null | worker }) => {
             <span>Profile Picture</span>
             <div {...getRootProps()} className={styles.dragDrop}>
               <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop image here</p>
+              {preview ? (
+                <div className={styles.preview}>
+                  <Image
+                    src={preview}
+                    alt='Selected'
+                    width={300}
+                    height={300}
+                  />
+                </div>
               ) : (
-                <p>
-                  <strong>Browse photos</strong> or drop here
-                </p>
+                <>
+                  {isDragActive ? (
+                    <p>Drop image here</p>
+                  ) : (
+                    <p>
+                      <strong>Browse photos</strong> or drop here
+                    </p>
+                  )}
+                  <p>
+                    A photo larger than 400 pixels
+                    <br /> work best. Max photo size 5MB.
+                  </p>
+                </>
               )}
-              <p>
-                A photo larger than 400 pixels
-                <br /> work best. Max photo size 5MB.
-              </p>
             </div>
           </div>
-          {preview && (
-            <div className={styles.preview}>
-              <h4>Preview:</h4>
-              <Image src={preview} alt='Selected' width={300} height={300} />
-            </div>
-          )}
         </div>
         <div className={styles.info}>
           <div className={styles.entry}>
@@ -285,7 +292,7 @@ const Personal = ({ user }: { user: null | worker }) => {
 
       <h3>Your CV/Resume</h3>
       {formData?.resume && (
-        <div className={styles.cvList} >
+        <div className={styles.cvList}>
           {formData.resume.map((resume) => (
             <div key={resume.url} className={styles.cv}>
               <File height={24} width={24} />

@@ -5,107 +5,132 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import styles from './navbar.module.css';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Image from 'next/image';
+import { IEmployerDocument } from '@/models/employer';
+import { IWorkerDocument } from '@/models/worker';
 
+interface Link {
+  name: string;
+  link: string;
+  status: 'both' | 'auth' | 'no-auth';
+  role: 'any' | 'worker' | 'employer';
+}
+
+const links: Link[] = [
+  {
+    name: 'Home',
+    link: '/',
+    status: 'both',
+    role: 'any',
+  },
+  {
+    name: 'Find Job',
+    link: '/findJob',
+    status: 'no-auth',
+    role: 'any',
+  },
+  {
+    name: 'Find Job',
+    link: '/findJob',
+    status: 'auth',
+    role: 'worker',
+  },
+  {
+    name: 'Find Candidates',
+    link: '/findCandidates',
+    status: 'auth',
+    role: 'employer',
+  },
+  {
+    name: 'Find Employers',
+    link: '/findEmployers',
+    status: 'auth',
+    role: 'worker',
+  },
+  {
+    name: 'Employers',
+    link: '/employers',
+    status: 'no-auth',
+    role: 'any',
+  },
+  {
+    name: 'Candidates',
+    link: 'candidates',
+    status: 'no-auth',
+    role: 'any',
+  },
+  {
+    name: 'Dashboard',
+    link: '/dashboard',
+    status: 'auth',
+    role: 'any',
+  },
+  {
+    name: 'My Jobs',
+    link: '/myJobs',
+    status: 'auth',
+    role: 'employer',
+  },
+  {
+    name: 'Applications',
+    link: '/applications',
+    status: 'auth',
+    role: 'employer',
+  },
+  {
+    name: 'Job Alerts',
+    link: '/jobAlerts',
+    status: 'auth',
+    role: 'worker',
+  },
+  {
+    name: 'Customer Support',
+    link: '/support',
+    status: 'both',
+    role: 'any',
+  },
+];
 const Navbar = () => {
-
-  interface Link {
-    name: string;
-    link: string;
-    status: 'both' | 'auth' | 'no-auth';
-    role: 'any' | 'worker' | 'employer';
-  }
-
-  const links: Link[] = [
-    {
-      name: 'Home',
-      link: '/',
-      status: 'both',
-      role: 'any',
-    },
-    {
-      name: 'Find Job',
-      link: '/findJob',
-      status: 'no-auth',
-      role: 'any',
-    },
-    {
-      name: 'Find Job',
-      link: '/findJob',
-      status: 'auth',
-      role: 'worker',
-    },
-    {
-      name: 'Find Candidates',
-      link: '/findCandidates',
-      status: 'auth',
-      role: 'employer',
-    },
-    {
-      name: 'Find Employers',
-      link: '/findEmployers',
-      status: 'auth',
-      role: 'worker',
-    },
-    {
-      name: 'Employers',
-      link: '/employers',
-      status: 'no-auth',
-      role: 'any',
-    },
-    {
-      name: 'Candidates',
-      link: 'candidates',
-      status: 'no-auth',
-      role: 'any',
-    },
-    {
-      name: 'Dashboard',
-      link: '/dashboard',
-      status: 'auth',
-      role: 'any',
-    },
-    {
-      name: 'My Jobs',
-      link: '/myJobs',
-      status: 'auth',
-      role: 'employer',
-    },
-    {
-      name: "Applications",
-      link: '/applications',
-      status: 'auth',
-      role: 'employer',
-    },
-    {
-      name: 'Job Alerts',
-      link: '/jobAlerts',
-      status: 'auth',
-      role: 'worker',
-    },
-    {
-      name: 'Customer Support',
-      link: '/support',
-      status: 'both',
-      role: 'any',
-    }
-  ];
+  const [pic, setPic] = useState('');
 
   const authenticatedActions = [
     {
       name: 'notifications',
-      icon: <Bell />,
+      icon: <Bell height={32} width={32} />,
       onClick: () => {},
     },
     {
       name: 'profile',
-      icon: <CircleUser />,
+      icon: <Image className={styles.avatar} src={pic} alt='Profile' height={32} width={32} />,
       onClick: () => signOut({ redirectTo: '/login' }),
     },
   ];
 
   const session = useSession();
   const user = session.data?.user;
-  
+
+  useEffect(() => {
+    const getInfo = async () => {
+      if (!user?._id) return;
+
+      const url =
+        user.role === 'employer'
+          ? `/api/employer/${user._id}`
+          : `/api/workers/${user._id}`;
+      try {
+        const { data } = await axios.get(url);
+        
+        const info = data.data;
+        setPic(user.role === 'employer' ? info?.logo : info?.avatar);
+      } catch (e) {
+        console.log(e);
+        return;
+      }
+    };
+    getInfo();
+  }, [user]);
 
   const pathname = usePathname();
   return (
@@ -116,11 +141,13 @@ const Navbar = () => {
             if (!user && link.status === 'auth') return null;
             if (user && link.status === 'no-auth') return null;
             if (link.role !== 'any' && user?.role !== link.role) return null;
-            return <Link key={link.name} href={link.link}>
-            <li className={link.link === pathname ? styles.active : ''}>
-              {link.name}
-            </li>
-          </Link>
+            return (
+              <Link key={link.name} href={link.link}>
+                <li className={link.link === pathname ? styles.active : ''}>
+                  {link.name}
+                </li>
+              </Link>
+            );
           })}
         </ul>
       </nav>
@@ -140,8 +167,12 @@ const Navbar = () => {
             </ul>
           ) : (
             <div className={styles.buttons}>
-              <Link href={'/login'} className={styles.signIn}>Sign In</Link>
-              <Link href={'/PostJob'} className={styles.postJob}>Post a Job</Link>
+              <Link href={'/login'} className={styles.signIn}>
+                Sign In
+              </Link>
+              <Link href={'/PostJob'} className={styles.postJob}>
+                Post a Job
+              </Link>
             </div>
           )}
         </div>

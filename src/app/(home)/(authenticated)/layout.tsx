@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export default async function RootLayout({
   children,
@@ -8,6 +9,6 @@ export default async function RootLayout({
   const session = await auth();
   const user = session?.user;
 
-  if (!user) return null;
-  return { children };
+  if (!user) return redirect('/login');
+  return <>{children}</>;
 }

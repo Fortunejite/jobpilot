@@ -2,6 +2,7 @@ import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/user';
 import Worker from '@/models/worker';
+import { getSession } from 'next-auth/react';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -15,6 +16,7 @@ export async function GET(
     await dbConnect();
 
     const data = await Worker.findOne({ userId: params.id }).populate('userId');
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
