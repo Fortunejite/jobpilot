@@ -7,6 +7,7 @@ import {
   BriefcaseBusiness,
   Layers,
   Settings,
+  X,
 } from 'lucide-react';
 import styles from './workerDashboard.module.css';
 import AppliedJobs from '@/components/workerDashboardComponent/appliedJobs/appliedJobs';
@@ -83,12 +84,15 @@ const WorkerDashboard = () => {
         <button className={styles.closeButton} onClick={closeDrawer}>
           <X />
         </button>
+        <p>Candidate Dashboard</p>
         <ul className={styles.tabs}>
           {tabs.map((tab, index) => (
             <li
               key={index}
               className={activeTab === index ? styles.active : ''}
-              onClick={() => handleChange(index)}
+              onClick={() => {
+                closeDrawer()
+                handleChange(index)}}
             >
               {tab.icon}
               <span>{tab.name}</span>

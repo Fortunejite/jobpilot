@@ -60,7 +60,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  z-index: 99;
   display: none;
 }
 
@@ -70,18 +70,19 @@
 
 .drawer {
   position: fixed;
-  top: -100vw;
-  left: 0;
-  width: 100vw;
+  top: 0;
+  left: -250px;
+  width: 250px;
   background-color: var(--background);
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+  z-index: 100;
   padding: 20px;
-  transition: top 0.3s ease;
+  transition: left 10.3s ease;
+  height: 100%
 }
 
 .open {
-  top: 0;
+  left: 0;
 }
 
 .closeButton {
@@ -90,8 +91,6 @@
   font-size: 24px;
   cursor: pointer;
   margin-bottom: 20px;
-  margin-left: auto;
-  display: block;
 }
 
 .drawer ul {
@@ -101,13 +100,12 @@
 
 
 .drawer ul .active {
-border-bottom: 4px solid var(--primary);
+border-left: 4px solid var(--primary);
 color: var(--primary);
 }
 .drawer ul li {
   margin: 16px 0;
-  display: flex;
-  justify-content: center;
+  
   font-size: 18px;
 }
 
@@ -117,7 +115,7 @@ color: var(--primary);
     flex-direction: column;
   }
   .container main {
-    padding: 16px;
+    padding: 16px 0;
   }
   .sideBar {
     padding: 8px 0;
