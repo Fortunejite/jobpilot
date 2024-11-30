@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./Drawer.module.css";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { X } from "lucide-react";
 
 interface LinkType {
   name: string;
@@ -41,7 +42,7 @@ const MobileDrawer = () => {
 
       <div className={`${styles.drawer} ${isOpen ? styles.open : ""}`}>
         <button className={styles.closeButton} onClick={closeDrawer}>
-          ✕
+          <X />
         </button>
         <ul>
           {links.map((link) => {

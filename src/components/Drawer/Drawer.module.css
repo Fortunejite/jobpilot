@@ -31,19 +31,18 @@
   
   .drawer {
     position: fixed;
-    top: 0;
-    left: -250px;
-    width: 250px;
-    height: 100%;
-    background-color: #ffffff;
+    top: -100vw;
+    left: 0;
+    width: 100vw;
+    background-color: var(--background);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     padding: 20px;
-    transition: left 0.3s ease;
+    transition: top 0.3s ease;
   }
   
   .open {
-    left: 0;
+    top: 0;
   }
   
   .closeButton {
@@ -52,6 +51,8 @@
     font-size: 24px;
     cursor: pointer;
     margin-bottom: 20px;
+    margin-left: auto;
+    display: block;
   }
   
   .drawer ul {
@@ -66,6 +67,9 @@
 }
   .drawer ul li {
     margin: 16px 0;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
   }
   
   
