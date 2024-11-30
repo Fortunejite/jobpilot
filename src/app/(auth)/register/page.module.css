@@ -1,26 +1,3 @@
-.container{
-  padding: 16px 64px;
-  display: flex;
-  flex-flow: column wrap;
-  gap: 32px
-}
-
-.logo {
-  display: flex;
-  gap: 8px;
-}
-
-
-.main {
-  display: flex;
-  flex-flow: column wrap;
-  gap: 16px;
-  width: 100%;
-}
-
-.main a {
-  color: var(--primary);
-}
 
 .accountType {
   background-color: whitesmoke;
@@ -57,7 +34,7 @@
   color: white;
 }
 
-.main form {
+.form {
   display: flex;
   flex-flow: column wrap;
   gap: 16px;
@@ -112,8 +89,4 @@
 }
 
 @media (max-width: 768px) {
-  .container{
-    padding: 8px 32px;
-  }
-  
 }
