@@ -11,6 +11,7 @@ declare module 'next-auth' {
       username: string;
       password?: string;
       role: "worker" | "employer"
+      expires: Date;
     };
   }
 

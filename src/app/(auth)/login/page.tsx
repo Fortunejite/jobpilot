@@ -13,11 +13,13 @@ import { object, string, ZodError } from 'zod';
 import { toast } from 'react-toastify';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const Login = () => {
   const [formData, setformData] = useState({
     email: '',
     password: '',
+    rememberMe: false
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -47,7 +49,7 @@ const Login = () => {
     setLoading(true)
     const data = validateCredentials(formData)
     if (!data) return setLoading(false)
-    const res = await signIn('credentials', {email: formData.email, password: formData.password, redirect: false})
+    const res = await signIn('credentials', {email: formData.email, password: formData.password, redirect: false, rememberMe: formData.rememberMe})
     if (res?.error) {
       toast.error('Invalid credentials')
       setLoading(false)
@@ -63,6 +65,7 @@ const Login = () => {
   };
   return (
     <div className={styles.container}>
+    <div className={styles.left}>
       <header className={styles.logo}>
         <BriefcaseBusiness height={32} width={32} /> <h1>Jobpilot</h1>
       </header>
@@ -95,6 +98,17 @@ const Login = () => {
               <Eye onClick={() => setPasswordVisible((prev) => !prev)} />
             )}
           </div>
+          <div className={styles.actions}>
+          <label>
+        <input
+          type="checkbox"
+          checked={formData.rememberMe}
+          onChange={(e) => setformData(prev => ({...prev, rememberMe: e.target.checked}))}
+        />
+        Remember Me
+      </label>
+      <Link href={'/forgotPassword'}>Forgot password?</Link>
+          </div>
           <button disabled={loading}>
             {loading ? (
               <span>Loading...</span>
@@ -105,7 +119,11 @@ const Login = () => {
             )}
           </button>
         </form>
-      </main>
+        </main>
+        </div>
+        <div className={styles.background}>
+          <Image src={'/logoBackground.png'} alt='Background' fill priority/>
+        </div>
     </div>
   );
 };

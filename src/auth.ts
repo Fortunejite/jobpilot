@@ -71,6 +71,7 @@ const option: NextAuthConfig = {
             token.email = email;
             token.fullName = existingUser?.fullName;
             token.username = existingUser?.username;
+
           }
         } else return token;
       } else {
@@ -81,6 +82,9 @@ const option: NextAuthConfig = {
           token.fullName = user.fullName;
           token.username = user.username;
           token.role = user.role;
+          token.expires = account?.rememberMe
+          ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
+          : Date.now() + 1 * 60 * 60 * 1000; // 1 hour
         }
       }
 
@@ -93,10 +97,15 @@ const option: NextAuthConfig = {
         session.user.fullName = token.fullName;
         session.user.username = token.username;
         session.user.role = token.role;
+        session.expires = token.expires;
       }
 
       return session;
     },
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // Default session max age for "Remember Me" (30 days)
   },
 };
 
