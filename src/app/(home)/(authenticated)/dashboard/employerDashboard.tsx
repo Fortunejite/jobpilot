@@ -1,96 +1,147 @@
-'use client'
+'use client';
 
-import { Bookmark, BriefcaseBusiness, CirclePlus, CircleUserRound, Layers, List, Settings } from 'lucide-react';
-import styles from './workerDashboard.module.css';
-import AppliedJobs from '../../../../components/workerDashboardComponent/appliedJobs/appliedJobs';
-import Overview from '../../../../components/workerDashboardComponent/overview/overview';
-import FavouriteJobs from '../../../../components/workerDashboardComponent/favouriteJobs/favouriteJob';
-import JobAlerts from '../../../../components/workerDashboardComponent/jobAlert/jobAlert';
-import Setting from '../../../../components/workerDashboardComponent/settings/settings';
+import {
+  AlignJustify,
+  Bookmark,
+  BriefcaseBusiness,
+  CirclePlus,
+  CircleUserRound,
+  Layers,
+  List,
+  Settings,
+  X,
+} from 'lucide-react';
+import styles from './dashboard.module.css';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import { IEmployerDocument } from '@/models/employer';
+import Overview from '@/components/employerDashboardComponent/overview/overview';
 
 const EmployerDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
-const [user, setUser] = useState(null);
+  const [employer, setEmployer] = useState<IEmployerDocument | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDrawer = () => setIsOpen(!isOpen);
+  const closeDrawer = () => setIsOpen(false);
 
-const tabs = [{
-  name: 'Overview',
-  icon: <Layers />,
-  component: <Overview user={user}/>,
-},
-{
-  name: 'Employers Profile',
-  icon: <CircleUserRound />,
-  component: <AppliedJobs user={user}/>,
-},
-{
-  name: 'Post a Job',
-  icon: <CirclePlus />,
-  component: <FavouriteJobs user={user}/>,
-},
-{
-  name: 'My Jobs',
-  icon: <BriefcaseBusiness />,
-  component: <JobAlerts user={user}/>,
-},
-{
-  name: 'Saved Candidates',
-  icon: <Bookmark />,
-  component: <Setting user={user}/>,
-},
-{
-  name: 'Plans & Billing',
-  icon: <List />,
-  component: <Setting user={user}/>,
-},
-{
-  name: 'All Companies',
-  icon: <List />,
-  component: <Setting user={user}/>,
-},
-{
-  name: 'Settings',
-  icon: <Settings />,
-  component: <Setting user={user}/>,
-},
-]
+  const tabs = [
+    {
+      name: 'Overview',
+      icon: <Layers />,
+      component: <Overview employer={employer} />,
+    },
+    {
+      name: 'Employers Profile',
+      icon: <CircleUserRound />,
+      component: null,
+    },
+    {
+      name: 'Post a Job',
+      icon: <CirclePlus />,
+      component: null,
+    },
+    {
+      name: 'My Jobs',
+      icon: <BriefcaseBusiness />,
+      component: null,
+    },
+    {
+      name: 'Saved Candidates',
+      icon: <Bookmark />,
+      component: null,
+    },
+    {
+      name: 'Plans & Billing',
+      icon: <List />,
+      component: null,
+    },
+    {
+      name: 'All Companies',
+      icon: <List />,
+      component: null,
+    },
+    {
+      name: 'Settings',
+      icon: <Settings />,
+      component: null,
+    },
+  ];
 
-const handleChange = (tabIndex: number) => {
-  setActiveTab(tabIndex);
-}
+  const handleChange = (tabIndex: number) => {
+    setActiveTab(tabIndex);
+  };
 
-const session = useSession();
+  const session = useSession();
 
-useEffect(() => {
-  const getUser = async () => {
-    const data = await axios.get(`/api/user/${session?.data?.user?._id}`)
-    const user = data.data.data;
-    setUser(user);
-  }
-  if (session?.data?.user?._id) getUser();
-}, [session])
+  useEffect(() => {
+    const getEmployer = async () => {
+      const { data } = await axios.get(
+        `/api/employer/${session?.data?.user?._id}`,
+      );
+      const employer = data.data as IEmployerDocument;
+      setEmployer(employer);
+    };
+    if (session?.data?.user?._id) getEmployer();
+  }, [session]);
 
-  return (
-    <div className={styles.container}>
-      <aside className={styles.sideBar}>
-        <p>Candidate Dashboard</p>
+  const Drawer = () => (
+    <div>
+      <div
+        className={`${styles.drawerOverlay} ${
+          isOpen ? styles.showOverlay : ''
+        }`}
+        onClick={closeDrawer}
+      ></div>
+
+      <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`}>
+        <button className={styles.closeButton} onClick={closeDrawer}>
+          <X />
+        </button>
+        <p>Employer Dashboard</p>
         <ul className={styles.tabs}>
-        {
-          tabs.map((tab, index) => (
-            <li key={index} className={activeTab === index ? styles.active : '' } onClick={() => handleChange(index)}>
+          {tabs.map((tab, index) => (
+            <li
+              key={index}
+              className={activeTab === index ? styles.active : ''}
+              onClick={() => {
+                closeDrawer();
+                handleChange(index);
+              }}
+            >
               {tab.icon}
               <span>{tab.name}</span>
             </li>
-        ))}
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={styles.container}>
+      <button className={styles.menu} onClick={toggleDrawer}>
+        <AlignJustify />
+      </button>
+      <Drawer />
+      <aside className={styles.sideBar}>
+        <p>Employer Dashboard</p>
+        <ul className={styles.tabs}>
+          {tabs.map((tab, index) => (
+            <li
+              key={index}
+              className={activeTab === index ? styles.active : ''}
+              onClick={() => handleChange(index)}
+            >
+              {tab.icon}
+              <span>{tab.name}</span>
+            </li>
+          ))}
         </ul>
       </aside>
-      <main>
-        {user ? tabs[activeTab].component : <h2>Loading</h2>}
-      </main>
+      <main>{employer ? tabs[activeTab].component : <h2>Loading</h2>}</main>
     </div>
-    )
-}
+  );
+};
 
 export default EmployerDashboard;

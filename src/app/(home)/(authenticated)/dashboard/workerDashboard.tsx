@@ -9,7 +9,7 @@ import {
   Settings,
   X,
 } from 'lucide-react';
-import styles from './workerDashboard.module.css';
+import styles from './dashboard.module.css';
 import AppliedJobs from '@/components/workerDashboardComponent/appliedJobs/appliedJobs';
 import Overview from '@/components/workerDashboardComponent/overview/overview';
 import FavouriteJobs from '@/components/workerDashboardComponent/favouriteJobs/favouriteJob';
@@ -21,14 +21,14 @@ import axios from 'axios';
 import { IWorkerDocument } from '@/models/worker';
 import { IUserDocument } from '@/models/user';
 
-export type worker = IWorkerDocument  & {
-  userId: IUserDocument
-}
+export type worker = IWorkerDocument & {
+  userId: IUserDocument;
+};
 
 const WorkerDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [user, setUser] = useState(null);
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => setIsOpen(!isOpen);
   const closeDrawer = () => setIsOpen(false);
 
@@ -78,9 +78,14 @@ const WorkerDashboard = () => {
 
   const Drawer = () => (
     <div>
-      <div className={`${styles.drawerOverlay} ${isOpen ? styles.showOverlay : ""}`} onClick={closeDrawer}></div>
+      <div
+        className={`${styles.drawerOverlay} ${
+          isOpen ? styles.showOverlay : ''
+        }`}
+        onClick={closeDrawer}
+      ></div>
 
-      <div className={`${styles.drawer} ${isOpen ? styles.open : ""}`}>
+      <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`}>
         <button className={styles.closeButton} onClick={closeDrawer}>
           <X />
         </button>
@@ -91,8 +96,9 @@ const WorkerDashboard = () => {
               key={index}
               className={activeTab === index ? styles.active : ''}
               onClick={() => {
-                closeDrawer()
-                handleChange(index)}}
+                closeDrawer();
+                handleChange(index);
+              }}
             >
               {tab.icon}
               <span>{tab.name}</span>
@@ -101,11 +107,13 @@ const WorkerDashboard = () => {
         </ul>
       </div>
     </div>
-  )
+  );
 
   return (
     <div className={styles.container}>
-      <button className={styles.menu} onClick={toggleDrawer}><AlignJustify /></button>
+      <button className={styles.menu} onClick={toggleDrawer}>
+        <AlignJustify />
+      </button>
       <Drawer />
       <aside className={styles.sideBar}>
         <p>Candidate Dashboard</p>

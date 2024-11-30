@@ -1,14 +1,14 @@
 'use client'
 
-import { worker } from "@/app/(home)/(authenticated)/dashboard/workerDashboard";
+import { IEmployerDocument } from "@/models/employer";
 
-const Overview = ({user}: {user: null | worker}) => {
+const Overview = ({employer}: {employer: null | IEmployerDocument}) => {
 
-  console.log(user);
+  
 
   return (
     <div>
-        <h3>Hello, </h3>
+        <h3>Hello, {employer?.companyName}</h3>
         <span>Here is your daily activities and job alerts</span>
     </div>
 )
