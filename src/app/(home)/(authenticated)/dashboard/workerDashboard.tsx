@@ -76,10 +76,13 @@ const WorkerDashboard = () => {
   }, [session]);
 
   const Drawer = () => (
-    <div className={styles.drawer}>
+    <div>
       <div className={`${styles.drawerOverlay} ${isOpen ? styles.showOverlay : ""}`} onClick={closeDrawer}></div>
-    <div className={styles.drawerContent}>
-        <p>Candidate Dashboard</p>
+
+      <div className={`${styles.drawer} ${isOpen ? styles.open : ""}`}>
+        <button className={styles.closeButton} onClick={closeDrawer}>
+          <X />
+        </button>
         <ul className={styles.tabs}>
           {tabs.map((tab, index) => (
             <li
@@ -93,7 +96,7 @@ const WorkerDashboard = () => {
           ))}
         </ul>
       </div>
-      </div>
+    </div>
   )
 
   return (
