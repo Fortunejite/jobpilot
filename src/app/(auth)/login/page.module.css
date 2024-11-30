@@ -1,40 +1,4 @@
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-flow: row wrap;
-}
-
-
-.left{
-  padding: 16px 64px;
-  display: flex;
-  flex-flow: column wrap;
-  gap: 32px;
-  height: 100%;
-}
-
-.logo {
-  display: flex;
-  gap: 8px;
-}
-
-
-.main {
-  display: flex;
-
-  
-  flex-flow: column wrap;
-  gap: 16px;
-  height: 100%;
-  width: 100%
-}
-
-
-.main a {
-  color: var(--primary);
-}
-
-.main form {
+.form {
   display: flex;
   flex-flow: column wrap;
   gap: 16px;
@@ -89,33 +53,6 @@
   color: white;
 }
 
-.background {
-  position: relative;
-  height: 100%;
-  display: flex;
-  background-color: red;
-  flex: 1 1 calc(50% - 8px)
-}
-
-.background img {
-  width: 100%;
-  height: auto;
-}
-
 @media (max-width: 768px) {
-  .container{
-    flex-direction: column;
-  }
-  .left {
-    padding: 16px;
-  }
-
-  .main {
-    flex-direction: column;
-  }
-
-  .background {
-    height: 200px;
-  }
   
 }

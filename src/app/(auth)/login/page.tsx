@@ -2,7 +2,6 @@
 
 import {
   ArrowRight,
-  BriefcaseBusiness,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -13,7 +12,6 @@ import { object, string, ZodError } from 'zod';
 import { toast } from 'react-toastify';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 const Login = () => {
   const [formData, setformData] = useState({
@@ -64,12 +62,7 @@ const Login = () => {
     setformData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
   return (
-    <div className={styles.container}>
-    <div className={styles.left}>
-      <header className={styles.logo}>
-        <BriefcaseBusiness height={32} width={32} /> <h1>Jobpilot</h1>
-      </header>
-      <main className={styles.main}>
+    <>
         <h1>Sign In</h1>
         <p>
           Dont have an account? <Link href={'/register'}>Create Account</Link>
@@ -119,13 +112,8 @@ const Login = () => {
             )}
           </button>
         </form>
-        </main>
-        </div>
-        <div className={styles.background}>
-          <Image src={'/logoBackground.png'} alt='Background' fill priority/>
-        </div>
-    </div>
-  );
+        </>
+  )
 };
 
 export default Login;
