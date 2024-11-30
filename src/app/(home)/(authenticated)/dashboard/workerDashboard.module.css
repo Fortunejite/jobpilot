@@ -1,6 +1,7 @@
 .container {
   display: flex;
   padding-left: 64px;
+  position: relative;
 }
 
 .container main {
@@ -43,14 +44,86 @@
   border-left: 4px solid var(--primary);
 }
 
+.menu{
+  display: none;
+  width: fit-content;
+  background-color: var(--accent);
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.drawerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+.showOverlay {
+  display: block;
+}
+
+.drawer {
+  position: fixed;
+  top: -100vw;
+  left: 0;
+  width: 100vw;
+  background-color: var(--background);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 20px;
+  transition: top 0.3s ease;
+}
+
+.open {
+  top: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-left: auto;
+  display: block;
+}
+
+.drawer ul {
+  list-style: none;
+  
+}
+
+
+.drawer ul .active {
+border-bottom: 4px solid var(--primary);
+color: var(--primary);
+}
+.drawer ul li {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
+    flex-direction: column;
   }
   .container main {
     padding: 16px;
   }
   .sideBar {
     padding: 8px 0;
+    display: none;
+  }
+  .menu {
+    display: block;
   }
 }

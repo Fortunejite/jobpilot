@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AlignJustify,
   BellRing,
   Bookmark,
   BriefcaseBusiness,
@@ -26,6 +27,9 @@ export type worker = IWorkerDocument  & {
 const WorkerDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [user, setUser] = useState(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const toggleDrawer = () => setIsOpen(!isOpen);
+  const closeDrawer = () => setIsOpen(false);
 
   const tabs = [
     {
@@ -71,8 +75,31 @@ const WorkerDashboard = () => {
     if (session?.data?.user?._id) getUser();
   }, [session]);
 
+  const Drawer = () => (
+    <div className={styles.drawer}>
+      <div className={`${styles.drawerOverlay} ${isOpen ? styles.showOverlay : ""}`} onClick={closeDrawer}></div>
+    <div className={styles.drawerContent}>
+        <p>Candidate Dashboard</p>
+        <ul className={styles.tabs}>
+          {tabs.map((tab, index) => (
+            <li
+              key={index}
+              className={activeTab === index ? styles.active : ''}
+              onClick={() => handleChange(index)}
+            >
+              {tab.icon}
+              <span>{tab.name}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      </div>
+  )
+
   return (
     <div className={styles.container}>
+      <button className={styles.menu} onClick={toggleDrawer}><AlignJustify /></button>
+      <Drawer />
       <aside className={styles.sideBar}>
         <p>Candidate Dashboard</p>
         <ul className={styles.tabs}>
