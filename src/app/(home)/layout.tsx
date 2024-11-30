@@ -1,5 +1,5 @@
 import Navbar from '@/components/navbar/navbar';
-
+import Drawer from '@/components/Drawer/Drawer';
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -8,6 +8,7 @@ export default function RootLayout({
   return (
     <>
       <Navbar />
+      <Drawer />
       {children}
     </> 
   );

@@ -26,6 +26,12 @@
   color: var(--primary);
 }
 
+.menuButton {
+  display: none;
+  border: none;
+  padding: 8px;
+}
+
 .bottomHeader{
   display: flex;
   justify-content: space-between;
@@ -75,9 +81,18 @@
 @media (max-width: 768px) {
   .navbar {
     padding: 0 16px;
+    display: flex;
   }
 
   .bottomHeader{
     padding: 8px 16px;
+  }
+
+  .navbar ul {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
   }
 }

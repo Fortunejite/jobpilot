@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, BriefcaseBusiness } from 'lucide-react';
+import { AlignJustify, Bell, BriefcaseBusiness } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import styles from './navbar.module.css';
@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
+import { useDrawer } from '@/context/drawer';
 
 interface Link {
   name: string;
@@ -108,6 +109,7 @@ const Navbar = () => {
 
   const session = useSession();
   const user = session.data?.user;
+  const {toggleDrawer} = useDrawer()
 
   useEffect(() => {
     const getInfo = async () => {
@@ -134,6 +136,7 @@ const Navbar = () => {
   return (
     <header className={styles.container}>
       <nav className={styles.navbar}>
+        <div></div>
         <ul>
           {links.map((link) => {
             if (!user && link.status === 'auth') return null;
@@ -148,6 +151,9 @@ const Navbar = () => {
             );
           })}
         </ul>
+        <button className={styles.menuButton} onClick={toggleDrawer}>
+        <AlignJustify />
+      </button>
       </nav>
       <div className={styles.bottomHeader}>
         <div className={styles.logo}>
