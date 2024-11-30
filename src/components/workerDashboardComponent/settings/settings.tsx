@@ -16,17 +16,17 @@ const SettingsPage = ({ user }: { user: null | worker }) => {
     {
       name: 'Personal',
       icon: <UserRound />,
-      component: <Personal user={user}/>,
+      component: <Personal user={user} />,
     },
     {
       name: 'Profile',
       icon: <CircleUserRound />,
-      component: <Profile user={user}/>,
+      component: <Profile user={user} />,
     },
     {
       name: 'Social Links',
       icon: <Globe />,
-      component: <Socials user={user}/>,
+      component: <Socials user={user} />,
     },
     {
       name: 'Account Setting',

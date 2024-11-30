@@ -6,7 +6,7 @@
   list-style: none;
   margin: 16px 0;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   gap: 16px;
   border-bottom: 1px solid #00000047;
 }
@@ -22,4 +22,10 @@
 .active {
   color: var(--primary);
   border-bottom: 2px solid var(--primary);
+}
+
+@media (max-width: 768px) {
+.tabs{
+  overflow-x: scroll;
+}
 }

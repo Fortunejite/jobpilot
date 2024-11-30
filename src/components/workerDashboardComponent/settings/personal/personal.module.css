@@ -170,3 +170,17 @@
   flex-flow: column wrap;
   gap: 16px;
 }
+
+@media (max-width: 768px) {
+  .form {
+    flex-direction: column;
+  }
+  .profile {
+    flex: 1 100%;
+  }
+  
+  .wrapper{
+    width: 100%;
+
+  }
+}
