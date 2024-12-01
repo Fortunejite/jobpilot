@@ -7,6 +7,11 @@ import ReactMarkdown from 'react-markdown';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {
+  industryType,
+  orginizationType,
+  teamSize,
+} from '@/lib/data/companyInfo';
 
 const foundingInfo = ({
   handleSubmit,
@@ -76,14 +81,11 @@ const foundingInfo = ({
           onChange={handleChange}
         >
           <option value={undefined}>Select...</option>
-          <option value={'Government'}>Government</option>
-          <option value={'NGO'}>NGO</option>
-          <option value={'Public'}>Public</option>
-          <option value={'Private'}>Private</option>
-          <option value={'International Agencies'}>
-            International Agencies
-          </option>
-          <option value={'Semi Government'}>Semi Government</option>
+          {orginizationType.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
         </select>
       </div>
       <div className={styles.entry}>
@@ -94,8 +96,11 @@ const foundingInfo = ({
           onChange={handleChange}
         >
           <option value={undefined}>Select...</option>
-          <option value={'Big'}>Big</option>
-          <option value={'Small'}>Small</option>
+          {industryType.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
         </select>
       </div>
       <div className={styles.date}>
@@ -122,14 +127,11 @@ const foundingInfo = ({
           onChange={handleChange}
         >
           <option value={undefined}>Select...</option>
-          <option value={'Only Me'}>Only Me</option>
-          <option value={'10 Members'}>10 Members</option>
-          <option value={'10-20 Members'}>10-20 Members</option>
-          <option value={'20-50 Members'}>20-50 Members</option>
-          <option value={'50-100 Members'}>50-100 Members</option>
-          <option value={'100-200 Members'}>100-200 Members</option>
-          <option value={'200-500 Members'}>200-500Members</option>
-          <option value={'500+ Members'}>500+ Members</option>
+          {Object.entries(teamSize).map(([key, value], index) => (
+            <option key={index} value={key}>
+              {value}
+            </option>
+          ))}
         </select>
       </div>
       <div className={`${styles.entry} ${styles.web}`}>

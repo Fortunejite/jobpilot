@@ -1,43 +1,8 @@
-import {
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import styles from './socials.module.css';
-import {
-  ArrowRight,
-  CirclePlus,
-  CircleX,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Youtube,
-} from 'lucide-react';
+import { ArrowRight, CirclePlus, CircleX } from 'lucide-react';
 import { IEmployerDocument } from '@/models/employer';
-
-const links = [
-  {
-    name: 'Facebook',
-    icon: <Facebook />,
-  },
-  {
-    name: 'LinkedIn',
-    icon: <Linkedin />,
-  },
-  {
-    name: 'Twitter',
-    icon: <Twitter />,
-  },
-  {
-    name: 'Instagram',
-    icon: <Instagram />,
-  },
-  {
-    name: 'Youtube',
-    icon: <Youtube />,
-  },
-];
+import links from '@/lib/data/socialLinks';
 
 const Socials = ({
   handleSubmit,
@@ -76,7 +41,11 @@ const Socials = ({
                 <option value={key}>{key}</option>
                 {}
                 {getAvailableLinks().map((link) => {
-                  return <option key={link.name} value={link.name}>{link.name}</option>;
+                  return (
+                    <option key={link.name} value={link.name}>
+                      {link.name}
+                    </option>
+                  );
                 })}
               </select>
               <input
@@ -180,8 +149,16 @@ const Socials = ({
         </button>
       )}
       <div className={styles.buttons}>
-        <button type='button' onClick={previous} className={`${styles.btn} ${styles.back}`}>Previous</button>
-        <button className={styles.btn}>Next <ArrowRight height={18} width={18} /></button>
+        <button
+          type='button'
+          onClick={previous}
+          className={`${styles.btn} ${styles.back}`}
+        >
+          Previous
+        </button>
+        <button className={styles.btn}>
+          Next <ArrowRight height={18} width={18} />
+        </button>
       </div>
     </form>
   );

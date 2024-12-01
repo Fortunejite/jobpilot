@@ -9,6 +9,8 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Calendar } from 'lucide-react';
+import fetchCountries from '@/lib/getCountries';
+import { professions } from '@/lib/data/workerInfo';
 
 const Profile = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
@@ -72,7 +74,7 @@ const Profile = ({ user }: { user: null | worker }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const res = await axios.patch(`/api/workers/${user?._id}`, formData);
     if (res.status != 201) {
       setLoading(false);
@@ -87,10 +89,7 @@ const Profile = ({ user }: { user: null | worker }) => {
   useEffect(() => {
     const getCountries = async () => {
       try {
-        const res = await axios.get(
-          'https://restcountries.com/v3.1/all?fields=name',
-        );
-        setCountries(res.data);
+        setCountries(await fetchCountries());
         setCountries((prev) => {
           if (!prev) return null;
           return prev.sort((a, b) => {
@@ -99,7 +98,6 @@ const Profile = ({ user }: { user: null | worker }) => {
             return nameA.localeCompare(nameB);
           });
         });
-        console.log(countries);
       } catch (e) {
         console.log(e);
       }
@@ -175,14 +173,11 @@ const Profile = ({ user }: { user: null | worker }) => {
             onChange={handleChange}
           >
             <option value={undefined}>Select...</option>
-            <option value={'Accountant'}>Accountant</option>
-            <option value={'Actor'}>Actor</option>
-            <option value={'Artist'}>Artist</option>
-            <option value={'Cashier'}>Cashier</option>
-            <option value={'Dentist'}>Dentist</option>
-            <option value={'Electrian'}>Electrian</option>
-            <option value={'Lawyer'}>Lawyer</option>
-            <option value={'Software Engineer'}>Software Engineer</option>
+            {professions.map((profession) => (
+              <option key={profession} value={profession}>
+                {profession}
+              </option>
+            ))}
           </select>
         </div>
         <div className={styles.markdown}>

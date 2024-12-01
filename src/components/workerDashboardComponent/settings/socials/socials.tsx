@@ -3,38 +3,8 @@ import { useState, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import styles from './socials.module.css';
-import {
-  CirclePlus,
-  CircleX,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Youtube,
-} from 'lucide-react';
-
-const links = [
-  {
-    name: 'Facebook',
-    icon: <Facebook />,
-  },
-  {
-    name: 'LinkedIn',
-    icon: <Linkedin />,
-  },
-  {
-    name: 'Twitter',
-    icon: <Twitter />,
-  },
-  {
-    name: 'Instagram',
-    icon: <Instagram />,
-  },
-  {
-    name: 'Youtube',
-    icon: <Youtube />,
-  },
-];
+import { CirclePlus, CircleX } from 'lucide-react';
+import links from '@/lib/data/socialLinks';
 
 const Socials = ({ user }: { user: null | worker }) => {
   const [formData, setFormData] = useState(user);
@@ -66,7 +36,11 @@ const Socials = ({ user }: { user: null | worker }) => {
                 <option value={key}>{key}</option>
                 {}
                 {getAvailableLinks().map((link) => {
-                  return <option key={link.name} value={link.name}>{link.name}</option>;
+                  return (
+                    <option key={link.name} value={link.name}>
+                      {link.name}
+                    </option>
+                  );
                 })}
               </select>
               <input
@@ -148,8 +122,8 @@ const Socials = ({ user }: { user: null | worker }) => {
     e.preventDefault();
     setLoading(true);
     Object.entries(formData.links).forEach(([key, value]) => {
-      if (value === '') removeLink(key)
-    })
+      if (value === '') removeLink(key);
+    });
     const res = await axios.patch(`/api/workers/${user?._id}`, formData);
     if (res.status != 201) {
       setLoading(false);

@@ -17,6 +17,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { IEmployerDocument } from '@/models/employer';
 import Overview from '@/components/employerDashboardComponent/overview/overview';
+import PostJob from '@/components/employerDashboardComponent/postJob/postJob';
 
 const EmployerDashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -39,7 +40,7 @@ const EmployerDashboard = () => {
     {
       name: 'Post a Job',
       icon: <CirclePlus />,
-      component: null,
+      component: <PostJob employer={employer} />,
     },
     {
       name: 'My Jobs',
