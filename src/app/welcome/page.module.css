@@ -45,3 +45,18 @@
 .container main {
   padding: 0 64px;
 }
+
+@media (max-width: 768px) {
+  .container header {
+    padding: 16px 8px;
+  }
+
+  .container main {
+    padding: 0 8px;
+  }
+
+  .tabs {
+    margin: 8px;
+    gap: 8px
+  }
+}
