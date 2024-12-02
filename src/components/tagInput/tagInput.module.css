@@ -1,0 +1,56 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-radius: 4px;
+  border: 1px solid grey;
+  padding: 16px;
+  /* overflow: hidden;
+  max-height: 58px */
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: flex;
+  gap: 8px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  border-radius: 8px;
+  align-items: center;
+  padding: 4px 8px;
+  box-shadow: 0px 5px 10px -2px rgba(109, 170, 230, 0.5);
+}
+
+.tag span {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.tag svg {
+  cursor: pointer;
+}
+
+.container input {
+  border: none;
+  padding: 0;
+}
+
+.container input:focus {
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .tag span {
+    
+    max-width: 100px;
+  }
+}
