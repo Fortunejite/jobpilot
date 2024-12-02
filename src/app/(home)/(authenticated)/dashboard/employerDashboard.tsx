@@ -14,12 +14,14 @@ import {
 import styles from './dashboard.module.css';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { IEmployerDocument } from '@/models/employer';
 import Overview from '@/components/employerDashboardComponent/overview/overview';
 import PostJob from '@/components/employerDashboardComponent/postJob/postJob';
+import { useRouter } from 'next/navigation';
 
 const EmployerDashboard = () => {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState(0);
   const [employer, setEmployer] = useState<IEmployerDocument | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -77,11 +79,16 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     const getEmployer = async () => {
+      try{
       const { data } = await axios.get(
         `/api/employer/${session?.data?.user?._id}`,
       );
       const employer = data.data as IEmployerDocument;
-      setEmployer(employer);
+      setEmployer(employer);} catch (e) {
+        if (e instanceof AxiosError) {
+          if (e.response?.status === 404) return router.push('/welcome')
+        }
+      }
     };
     if (session?.data?.user?._id) getEmployer();
   }, [session]);

@@ -16,6 +16,7 @@ export async function GET(
     await dbConnect();
 
     const data = await Employer.findOne({ userId: params.id }).populate('userId');
+    if (!data) return NextResponse.json({data: null}, {status: 404})
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
