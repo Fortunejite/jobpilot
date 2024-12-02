@@ -21,3 +21,15 @@
   color: var(--text);
   transition: width 0.5s ease-in-out;
 }
+
+@media (max-width: 768px) {
+  .container {
+    width: auto;
+  }
+
+  .label {
+    justify-content: start;
+    gap: 8px
+  }
+
+}

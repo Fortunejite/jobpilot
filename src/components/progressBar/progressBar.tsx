@@ -8,7 +8,7 @@ const ProgressBar = ({
   title: string;
 }) => (
   <div className={styles.container}>
-    <div className={styles.label}><span>{`${title}`}</span><span>{`${progress}% Completed`}</span></div>
+    <div className={styles.label}><span>{`${title}: `}</span><span>{`${progress}%`}</span></div>
     <div className={styles.filler} style={{ width: `${progress}%` }}></div>
   </div>
 );

@@ -93,3 +93,9 @@
   background-color: var(--accent);
   color: var(--primary);
 }
+
+@media (max-width: 768px) {
+  .entry select {
+    width: fit-content;
+  }
+}

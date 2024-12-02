@@ -154,10 +154,10 @@ const Socials = ({
           onClick={previous}
           className={`${styles.btn} ${styles.back}`}
         >
-          Previous
+          <span>Previous</span>
         </button>
         <button className={styles.btn}>
-          Next <ArrowRight height={18} width={18} />
+          <span>Next</span> <ArrowRight height={18} width={18} />
         </button>
       </div>
     </form>

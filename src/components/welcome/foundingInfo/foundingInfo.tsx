@@ -146,10 +146,7 @@ const foundingInfo = ({
           />
         </div>
       </div>
-      <div className={styles.entry}>
-        <label id='vision'>Company Vision</label>
-        <input id='vision' value={formData.vision} onChange={handleChange} />
-      </div>
+    
       <div className={styles.markdown}>
         <label id='vision'>Company Vision</label>
         <ReactMde
@@ -173,10 +170,10 @@ const foundingInfo = ({
           onClick={previous}
           className={`${styles.btn} ${styles.back}`}
         >
-          Previous
+          <span>Previous</span>
         </button>
         <button className={styles.btn}>
-          Next <ArrowRight height={18} width={18} />
+          <span>Next</span> <ArrowRight height={18} width={18} />
         </button>
       </div>
     </form>

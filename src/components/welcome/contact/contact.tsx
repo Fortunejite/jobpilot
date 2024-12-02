@@ -73,11 +73,11 @@ const Contact = ({
           onClick={previous}
           className={`${styles.btn} ${styles.back}`}
         >
-          Previous
+          <span>Previous</span>
         </button>
         <button disabled={loading} className={styles.btn}>
           {
-            loading ? 'Uploading' : <><span>Finish Editing</span> <ArrowRight height={18} width={18} /></>
+            loading ? <span>Uploading</span> : <><span>Finish Editing</span> <ArrowRight height={18} width={18} /></>
           }
           
         </button>

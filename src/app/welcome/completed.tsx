@@ -12,10 +12,10 @@ const Completed = () => (
       <Link href={'/dashboard'}
       className={`${styles.link} ${styles.dashboard}`}
       >
-        View Dashboard
+        <span>View Dashboard</span>
       </Link>
       <button className={styles.link}>
-        Post Job <ArrowRight height={18} width={18} />
+        <span>Post Job</span> <ArrowRight height={18} width={18} />
       </button>
     </div>
   </div>
