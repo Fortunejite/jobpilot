@@ -1,46 +1,68 @@
-import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import dbConnect from '@/lib/mongodb';
-import User from '@/models/user';
 import Worker from '@/models/worker';
+import User from '@/models/user';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
   try {
-    if (!params.id) {
-      return NextResponse.json({ data: null }, { status: 400 });
+    const { id } = params;
+    if (!id) {
+      return NextResponse.json({ message: 'Worker ID is required' }, { status: 400 });
     }
-    await dbConnect();
 
-    const data = await Worker.findOne({ userId: params.id }).populate('userId');
-    
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ data: null }, { status: 500 });
+    await dbConnect();
+    const worker = await Worker.findOne({ userId: id }).populate('userId');
+
+    if (!worker) {
+      return NextResponse.json({ message: 'Worker not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ data: worker }, { status: 200 });
+  } catch (error) {
+    console.error('GET /worker error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { id: string } }
 ) {
   try {
-    if (!params.id) {
-      return NextResponse.json({ data: null }, { status: 400 });
+    const { id } = params;
+    if (!id) {
+      return NextResponse.json({ message: 'Worker ID is required' }, { status: 400 });
     }
-    const workerId = params.id;
-    const {userId, ...data} = await request.json() as worker;
+
+    const body = await request.json();
+    const { userId, ...updateData } = body;
+
     await dbConnect();
 
-    await Worker.findOneAndUpdate({ _id: workerId }, data);
-    await User.findOneAndUpdate({_id: userId._id}, userId)
-    return NextResponse.json({ data }, { status: 201 });
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ data: null }, { status: 500 });
+    // Update the worker document
+    const updatedWorker = await Worker.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedWorker) {
+      return NextResponse.json({ message: 'Worker not found' }, { status: 404 });
+    }
+
+    // Update the associated user document if provided
+    if (userId) {
+      await User.findByIdAndUpdate(userId._id, userId, {
+        new: true,
+        runValidators: true,
+      });
+    }
+
+    return NextResponse.json({ data: updatedWorker }, { status: 200 });
+  } catch (error) {
+    console.error('PATCH /worker error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
