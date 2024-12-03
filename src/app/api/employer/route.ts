@@ -1,78 +1,77 @@
 import { auth } from '@/auth';
 import dbConnect from '@/lib/mongodb';
 import Employer from '@/models/employer';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { object, string, date, record, ZodError } from 'zod';
 
-export async function GET(request: NextRequest) {
+export async function GET(request) {
   try {
     await dbConnect();
 
-    const page = Number(request.nextUrl.searchParams.get('page')) || 1;
-    const limit = Number(request.nextUrl.searchParams.get('limit')) || 10;
+    const { searchParams } = request.nextUrl;
+    const page = Number(searchParams.get('page')) || 1;
+    const limit = Number(searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
 
-    const workers = await Employer.find()
-      .populate('userId')
-      .skip(skip)
-      .limit(limit);
+    const employers = await Employer.find().populate('userId').skip(skip).limit(limit);
+    if (!employers.length) {
+      return NextResponse.json({ message: 'No employers found' }, { status: 404 });
+    }
 
-    return NextResponse.json({ data: workers }, { status: 200 });
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ data: null }, { status: 500 });
+    return NextResponse.json({ data: employers }, { status: 200 });
+  } catch (error) {
+    console.error('GET /employers error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request) {
   const formValidator = object({
-    companyName: string().min(1, { message: 'Company Name is required' }),
-    about: string().min(1, { message: 'About Us is required' }),
-    orginizationType: string().min(1, {
-      message: 'Orginization Type is required',
-    }),
-    industryType: string().min(1, { message: 'Industry Type is required' }),
+    companyName: string().min(1, 'Company Name is required'),
+    about: string().min(1, 'About Us is required'),
+    orginizationType: string().min(1, 'Organization Type is required'),
+    industryType: string().min(1, 'Industry Type is required'),
     teamSize: string(),
-    yearOfEstablishment: date(),
-    website: string()
-      .url({ message: 'Invalid website url' })
-      .min(1, { message: 'website is required' }),
-    vision: string().min(1, { message: 'vision is required' }),
-    links: record(string().url({ message: 'Enter a valid social link' })),
-    phoneNumber: string().min(1, { message: 'phoneNumber is required' }),
-    address: string().min(1, { message: 'Location  is required' }),
-    email: string().email({ message: 'Invalid email address' }),
-    logo: string()
-      .url({ message: 'Invalid logo url' })
-      .min(1, { message: 'website is required' }),
-    banner: string()
-      .url({ message: 'Invalid banner url' })
-      .min(1, { message: 'website is required' }),
+    yearOfEstablishment: date().or(string().refine(val => !isNaN(Date.parse(val)), { message: 'Invalid date' })),
+    website: string().url('Invalid website URL').min(1, 'Website is required'),
+    vision: string().min(1, 'Vision is required'),
+    links: record(string().url('Enter a valid social link')),
+    phoneNumber: string().min(1, 'Phone number is required'),
+    address: string().min(1, 'Address is required'),
+    email: string().email('Invalid email address'),
+    logo: string().url('Invalid logo URL').min(1, 'Logo URL is required'),
+    banner: string().url('Invalid banner URL').min(1, 'Banner URL is required'),
   });
+
   try {
     const body = await request.json();
-    body.yearOfEstablishment = new Date(body.yearOfEstablishment)
-    const data = formValidator.parse(body);
+    body.yearOfEstablishment = new Date(body.yearOfEstablishment);
+    const validatedData = formValidator.parse(body);
+
     await dbConnect();
-    const session = await auth()
-    const user = session?.user
-    if (!user) return NextResponse.json({ msg: 'Unauthorized' }, { status: 403 });
-    const oldEmployer = await Employer.findOne({userId: user._id})
-    if (oldEmployer) return NextResponse.json({ msg: 'Employer already exists' }, { status: 402 });
 
-    const company = new Employer({
-      ...data,
-      userId: user._id
-    });
-    await company.save();
-    return NextResponse.json({ msg: 'Company created' }, { status: 201 });
-  } catch (e) {
-    if (e instanceof ZodError) {
-      console.log(e);
-
-      return NextResponse.json({ msg: e.issues[0].message }, { status: 401 });
+    const session = await auth();
+    const user = session?.user;
+    if (!user) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
     }
-    console.log(e);
-    return NextResponse.json({ msg: e }, { status: 409 });
+
+    const existingEmployer = await Employer.findOne({ userId: user._id });
+    if (existingEmployer) {
+      return NextResponse.json({ message: 'Employer already exists' }, { status: 409 });
+    }
+
+    const newEmployer = new Employer({ ...validatedData, userId: user._id });
+    await newEmployer.save();
+
+    return NextResponse.json({ message: 'Company created successfully' }, { status: 201 });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.error('Validation error:', error);
+      return NextResponse.json({ message: error.issues[0]?.message || 'Invalid input' }, { status: 400 });
+    }
+
+    console.error('POST /employers error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
