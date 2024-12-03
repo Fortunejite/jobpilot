@@ -17,37 +17,30 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('order') || 'desc';
     const skip = (page - 1) * limit;
 
+    const query: any = {};
     if (companyId) {
-      
-      const jobs = await Job.find({ companyId })
-        .populate('companyId')
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
-      if (!jobs.length) {
-        return NextResponse.json({ message: 'Job not found' }, { status: 404 });
+      if (!mongoose.Types.ObjectId.isValid(companyId)) {
+        return NextResponse.json({ message: 'Invalid company ID' }, { status: 400 });
       }
-      if (count) {
-        const numJobs = await Job.countDocuments({ companyId });
-        return NextResponse.json(
-          { data: jobs, total: numJobs },
-          { status: 200 },
-        );
-      }
-      return NextResponse.json({ data: jobs }, { status: 200 });
+      query.companyId = new mongoose.Types.ObjectId(companyId);
     }
 
-    const jobs = await Job.find()
+    const jobs = await Job.find(query)
       .populate('companyId')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+
     if (!jobs.length) {
-      return NextResponse.json({ message: 'No jobs found' }, { status: 404 });
+      return NextResponse.json({ message: 'Job not found' }, { status: 404 });
     }
+
     if (count) {
-      const numJobs = await Job.countDocuments();
-      return NextResponse.json({ data: jobs, total: numJobs }, { status: 200 });
+      const numJobs = await Job.countDocuments(query);
+      return NextResponse.json(
+        { data: jobs, total: numJobs },
+        { status: 200 }
+      );
     }
 
     return NextResponse.json({ data: jobs }, { status: 200 });
@@ -55,7 +48,7 @@ export async function GET(request: NextRequest) {
     console.error('GET /jobs error:', error);
     return NextResponse.json(
       { message: 'Internal Server Error' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -77,21 +70,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { message: 'Job created successfully' },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error) {
     if (error instanceof ZodError) {
       console.error('Validation error:', error);
       return NextResponse.json(
         { message: error.issues[0]?.message || 'Invalid data' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     console.error('POST /jobs error:', error);
     return NextResponse.json(
       { message: 'Internal Server Error' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
