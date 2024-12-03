@@ -3,15 +3,28 @@
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
+  margin: 16px 0;
+  font-size: 0.9rem;
 }
 
-.table th {
+.table span {
+  font-size: 0.9rem;
+  margin-left: 8px;
+}
+
+.table svg {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+
+.table thead tr {
   text-align: left;
   background-color: var(--background);
-  padding: 8px;
 }
 
-.table td {
+.table td, .table th {
+  padding: 12px 15px;
   
 }
 .table td div {
@@ -21,5 +34,22 @@
 }
 
 .table tbody tr {
-  margin: 16px 0;
+  border-bottom: 1px solid var(--background);
+
+}
+
+.table button{
+  background-color: var(--primary);
+  color: var(--secondary);
+  padding: 8px;
+  border-radius: 2px;
+  border: none;
+}
+
+.activeStatus {
+  color: green;
+}
+
+.expiredStatus {
+  color: red;
 }

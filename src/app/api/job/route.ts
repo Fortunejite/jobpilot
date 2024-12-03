@@ -12,17 +12,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const page = Number(searchParams.get('page')) || 1;
     const limit = Number(searchParams.get('limit')) || 10;
-    const companyId = searchParams.get('companyId');
+    const userId = searchParams.get('userId');
     const count = Boolean(searchParams.get('count')) || false;
     const sortOrder = searchParams.get('order') || 'desc';
     const skip = (page - 1) * limit;
 
     const query: any = {};
-    if (companyId) {
-      if (!mongoose.Types.ObjectId.isValid(companyId)) {
-        return NextResponse.json({ message: 'Invalid company ID' }, { status: 400 });
+    if (userId) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return NextResponse.json(
+          { message: 'Invalid company ID' },
+          { status: 400 },
+        );
       }
-      query.companyId = new mongoose.Types.ObjectId(companyId);
+      query.companyId = new mongoose.Types.ObjectId(userId);
     }
 
     const jobs = await Job.find(query)
@@ -37,10 +40,7 @@ export async function GET(request: NextRequest) {
 
     if (count) {
       const numJobs = await Job.countDocuments(query);
-      return NextResponse.json(
-        { data: jobs, total: numJobs },
-        { status: 200 }
-      );
+      return NextResponse.json({ data: jobs, total: numJobs }, { status: 200 });
     }
 
     return NextResponse.json({ data: jobs }, { status: 200 });
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     console.error('GET /jobs error:', error);
     return NextResponse.json(
       { message: 'Internal Server Error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -70,21 +70,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { message: 'Job created successfully' },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     if (error instanceof ZodError) {
       console.error('Validation error:', error);
       return NextResponse.json(
         { message: error.issues[0]?.message || 'Invalid data' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error('POST /jobs error:', error);
     return NextResponse.json(
       { message: 'Internal Server Error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

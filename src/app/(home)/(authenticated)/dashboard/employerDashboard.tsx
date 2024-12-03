@@ -28,6 +28,8 @@ const EmployerDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => setIsOpen(!isOpen);
   const closeDrawer = () => setIsOpen(false);
+  const session = useSession();
+  const userId = session?.data?.user?._id;
 
   const tabs = [
     {
@@ -48,7 +50,7 @@ const EmployerDashboard = () => {
     {
       name: 'My Jobs',
       icon: <BriefcaseBusiness />,
-      component: <MyJobs employer={employer} />,
+      component: <MyJobs employer={employer} userId={userId} />,
     },
     {
       name: 'Saved Candidates',
@@ -76,12 +78,11 @@ const EmployerDashboard = () => {
     setActiveTab(tabIndex);
   };
 
-  const session = useSession();
+  
 
   useEffect(() => {
     const getEmployer = async () => {
       try {
-        const userId = session?.data?.user?._id;
         if (!userId || userId === '') return;
         const { data } = await axios.get(
           `/api/employer/${userId}`,
