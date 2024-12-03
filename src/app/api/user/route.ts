@@ -1,73 +1,74 @@
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/user';
+import Worker from '@/models/worker';
 import { NextRequest, NextResponse } from 'next/server';
 import { hash } from 'bcrypt';
-import { ZodError, boolean, object, string } from 'zod';
-import Worker from '@/models/worker';
+import { ZodError, object, string, boolean } from 'zod';
 
 export async function GET(request: NextRequest) {
   try {
     await dbConnect();
-
-    const page = Number(request.nextUrl.searchParams.get('page')) || 1;
-    const limit = Number(request.nextUrl.searchParams.get('limit')) || 10;
+    
+    const page = parseInt(request.nextUrl.searchParams.get('page') || '1', 10);
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '10', 10);
     const skip = (page - 1) * limit;
 
     const users = await User.find().skip(skip).limit(limit);
+    
     return NextResponse.json({ data: users }, { status: 200 });
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ data: null }, { status: 500 });
+  } catch (error) {
+    console.error('GET /users error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
-  const userObject = object({
+  const userSchema = object({
     email: string().email({ message: 'Invalid email address' }),
     username: string()
-      .min(3, { message: 'Username is a minimum of 3 characters' })
-      .max(20, { message: 'Username is a maximum of 20 characters' }),
-    fullName: string().min(1, { message: 'Full name cannot be empty' }),
+      .min(3, { message: 'Username must be at least 3 characters' })
+      .max(20, { message: 'Username must not exceed 20 characters' }),
+    fullName: string().min(1, { message: 'Full name is required' }),
     password: string()
-      .min(6, { message: 'Password is a minimum of 6 characters' })
-      .max(30, { message: 'Password is a maximum of 30 characters' }),
+      .min(6, { message: 'Password must be at least 6 characters' })
+      .max(30, { message: 'Password must not exceed 30 characters' }),
     isWorker: boolean(),
   });
+
   try {
     const credentials = await request.json();
-    const { email, password, fullName, username, isWorker } =
-      userObject.parse(credentials);
+    const { email, password, fullName, username, isWorker } = userSchema.parse(credentials);
+
     await dbConnect();
-    const availableUser = await User.findOne({ email });
-    if (availableUser) {
-      return NextResponse.json(
-        { msg: 'Email already exists' },
-        { status: 409 },
-      );
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json({ message: 'Email already exists' }, { status: 409 });
     }
+
     const hashedPassword = await hash(password, 10);
-    const user = new User({
+
+    const newUser = new User({
       email,
       fullName,
       username,
       password: hashedPassword,
       role: isWorker ? 'worker' : 'employer',
     });
-    await user.save();
-    if (isWorker) {
-      const worker = new Worker({
-        userId: user._id,
-      });
-      await worker.save();
-    }
-    return NextResponse.json({ msg: 'signup successful' }, { status: 201 });
-  } catch (e) {
-    if (e instanceof ZodError) {
-      console.log(e);
+    await newUser.save();
 
-      return NextResponse.json({ msg: e.issues[0].message }, { status: 401 });
+    if (isWorker) {
+      const newWorker = new Worker({ userId: newUser._id });
+      await newWorker.save();
     }
-    console.log(e);
-    return NextResponse.json({ msg: e }, { status: 409 });
+
+    return NextResponse.json({ message: 'Signup successful' }, { status: 201 });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.error('Validation error:', error);
+      return NextResponse.json({ message: error.issues[0].message }, { status: 400 });
+    }
+    console.error('POST /users error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
