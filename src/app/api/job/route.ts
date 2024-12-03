@@ -4,56 +4,59 @@ import Job from '@/models/job';
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
-export async function GET(request: NextRequest) {
+export async function GET(request) {
   try {
     await dbConnect();
 
-    const page = Number(request.nextUrl.searchParams.get('page')) || 1;
-    const limit = Number(request.nextUrl.searchParams.get('limit')) || 10;
-    const companyId = request.nextUrl.searchParams.get('companyId') || null
+    const { searchParams } = request.nextUrl;
+    const page = Number(searchParams.get('page')) || 1;
+    const limit = Number(searchParams.get('limit')) || 10;
+    const companyId = searchParams.get('companyId');
     const skip = (page - 1) * limit;
 
     if (companyId) {
-      const job = await Job.findOne({companyId})
-      .populate('companyId');
-
-      if (!job) return NextResponse.json({ data: null }, { status: 404 });
-
-    return NextResponse.json({ data: jobs }, { status: 200 });
+      const job = await Job.findOne({ companyId }).populate('companyId');
+      if (!job) {
+        return NextResponse.json({ message: 'Job not found' }, { status: 404 });
+      }
+      return NextResponse.json({ data: job }, { status: 200 });
     }
-    const jobs = await Job.find()
-      .populate('companyId')
-      .skip(skip)
-      .limit(limit);
 
-    if (!jobs) return NextResponse.json({ data: null }, { status: 404 });
+    const jobs = await Job.find().populate('companyId').skip(skip).limit(limit);
+    if (!jobs.length) {
+      return NextResponse.json({ message: 'No jobs found' }, { status: 404 });
+    }
 
     return NextResponse.json({ data: jobs }, { status: 200 });
-  } catch (e) {
-    console.log(e);
-    return NextResponse.json({ data: null }, { status: 500 });
+  } catch (error) {
+    console.error('GET /jobs error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     await dbConnect();
     const data = await request.json();
+
     const session = await auth();
     const user = session?.user;
-    if (!user || user.role !== 'employer')
-      return NextResponse.json({ msg: 'Unauthorized' }, { status: 403 });
-    const job = new Job({ ...data, companyId: user._id });
-    
-    await job.save();
-    return NextResponse.json({ msg: 'Job created' }, { status: 201 });
-  } catch (e) {
-    if (e instanceof ZodError) {
-      console.log(e);
 
-      return NextResponse.json({ msg: e.issues[0].message }, { status: 401 });
+    if (!user || user.role !== 'employer') {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
     }
-    console.log(e);
-    return NextResponse.json({ msg: e }, { status: 500 });
+
+    const newJob = new Job({ ...data, companyId: user._id });
+    await newJob.save();
+
+    return NextResponse.json({ message: 'Job created successfully' }, { status: 201 });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.error('Validation error:', error);
+      return NextResponse.json({ message: error.issues[0]?.message || 'Invalid data' }, { status: 400 });
+    }
+
+    console.error('POST /jobs error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
