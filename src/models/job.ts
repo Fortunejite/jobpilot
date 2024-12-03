@@ -18,80 +18,101 @@ export interface IJob {
   description: string;
   applyOn: 'jobpilot' | 'email' | 'other';
   skills: string[];
+  applicatiions: {
+    userId: Schema.Types.ObjectId;
+    coverLetter: string;
+    resume: string;
+  }[];
 }
 
 export interface IJobDocument extends IJob, Document {}
 
-const jobSchema: Schema<IJobDocument> = new Schema({
-  companyId: {
-    type: Schema.Types.ObjectId,
-    required: true,
+const jobSchema: Schema<IJobDocument> = new Schema(
+  {
+    companyId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    tags: {
+      type: [String],
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
+    minSalary: {
+      type: Number,
+      required: true,
+    },
+    maxSalary: {
+      type: Number,
+      required: true,
+    },
+    salaryType: {
+      type: String,
+      required: true,
+    },
+    education: {
+      type: String,
+      required: true,
+    },
+    exprience: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    vacancies: {
+      type: Number,
+      required: true,
+    },
+    expire: {
+      type: Date,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    benefits: {
+      type: [String],
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    applyOn: {
+      type: String,
+      required: true,
+    },
+    skills: {
+      type: [String],
+      required: true,
+    },
+    applicatiions: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+        },
+        coverLetter: {
+          type: String,
+        },
+        resume: {
+          type: String,
+        },
+      },
+    ],
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  tags: {
-    type: [String],
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-  },
-  minSalary: {
-    type: Number,
-    required: true,
-  },
-  maxSalary: {
-    type: Number,
-    required: true,
-  },
-  salaryType: {
-    type: String,
-    required: true,
-  },
-  education: {
-    type: String,
-    required: true,
-  },
-  exprience: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-  },
-  vacancies: {
-    type: Number,
-    required: true,
-  },
-  expire: {
-    type: Date,
-    required: true,
-  },
-  country: {
-    type: String,
-    required: true,
-  },
-  benefits: {
-    type: [String],
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  applyOn: {
-    type: String,
-    required: true,
-  },
-  skills: {
-    type: [String],
-    required: true,
-  },
-});
+  { timestamps: true },
+);
 
 const Job: Model<IJobDocument> =
   models.Job || model<IJobDocument>('Job', jobSchema);

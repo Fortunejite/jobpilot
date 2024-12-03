@@ -17,9 +17,8 @@ import fetchCountries from '@/lib/getCountries';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Modal from '@/components/modal/modal';
-import Link from 'next/link';
 
-const PostJob = ({ employer }: { employer: null | IEmployerDocument }) => {
+const PostJob = ({ employer, switchTabs }: { employer: null | IEmployerDocument; switchTabs: () => void }) => {
   const [formData, setFormData] = useState<IJob>({
     title: '',
     tags: [],
@@ -37,6 +36,7 @@ const PostJob = ({ employer }: { employer: null | IEmployerDocument }) => {
     description: '',
     applyOn: 'jobpilot',
     skills: [],
+    applicatiions: [],
   });
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
@@ -434,8 +434,8 @@ const PostJob = ({ employer }: { employer: null | IEmployerDocument }) => {
       >
         <div>
           <h3>🎉 Congratulations, Your Job is Successfully posted!</h3>
-        <Link
-          href='/myJobs'
+        <button
+          onClick={switchTabs}
           className={styles.viewLink}
         >
           {loading ? (
@@ -445,7 +445,7 @@ const PostJob = ({ employer }: { employer: null | IEmployerDocument }) => {
               <span>View Jobs</span> <ArrowRight height={18} width={18} />
             </>
           )}
-        </Link>
+        </button>
         </div>
       </Modal>
     </div>

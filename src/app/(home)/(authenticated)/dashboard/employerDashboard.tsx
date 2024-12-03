@@ -19,9 +19,10 @@ import { IEmployerDocument } from '@/models/employer';
 import Overview from '@/components/employerDashboardComponent/overview/overview';
 import PostJob from '@/components/employerDashboardComponent/postJob/postJob';
 import { useRouter } from 'next/navigation';
+import MyJobs from '@/components/employerDashboardComponent/myJobs/myJobs';
 
 const EmployerDashboard = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [employer, setEmployer] = useState<IEmployerDocument | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,12 +43,12 @@ const EmployerDashboard = () => {
     {
       name: 'Post a Job',
       icon: <CirclePlus />,
-      component: <PostJob employer={employer} />,
+      component: <PostJob employer={employer} switchTabs={() => handleChange(3)} />,
     },
     {
       name: 'My Jobs',
       icon: <BriefcaseBusiness />,
-      component: null,
+      component: <MyJobs employer={employer} />,
     },
     {
       name: 'Saved Candidates',
@@ -79,14 +80,17 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     const getEmployer = async () => {
-      try{
-      const { data } = await axios.get(
-        `/api/employer/${session?.data?.user?._id}`,
-      );
-      const employer = data.data as IEmployerDocument;
-      setEmployer(employer);} catch (e) {
+      try {
+        const userId = session?.data?.user?._id;
+        if (!userId || userId === '') return;
+        const { data } = await axios.get(
+          `/api/employer/${userId}`,
+        );
+        const employer = data.data as IEmployerDocument;
+        setEmployer(employer);
+      } catch (e) {
         if (e instanceof AxiosError) {
-          if (e.response?.status === 404) return router.push('/welcome')
+          if (e.response?.status === 404) return router.push('/welcome');
         }
       }
     };

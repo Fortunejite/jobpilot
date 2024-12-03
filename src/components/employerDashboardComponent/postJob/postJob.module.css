@@ -133,7 +133,7 @@
   flex: 1 calc(30% );
   display: flex;
   gap: 8px;
-  align-items: start;
+  align-items: flex-start;
   padding: 8px;
   border-radius: 4px;
 }

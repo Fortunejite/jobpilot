@@ -1,10 +1,10 @@
 import { auth } from '@/auth';
 import dbConnect from '@/lib/mongodb';
 import Employer from '@/models/employer';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { object, string, date, record, ZodError } from 'zod';
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     await dbConnect();
 
@@ -25,7 +25,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   const formValidator = object({
     companyName: string().min(1, 'Company Name is required'),
     about: string().min(1, 'About Us is required'),

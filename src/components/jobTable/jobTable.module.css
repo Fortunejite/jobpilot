@@ -1,0 +1,25 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.table th {
+  text-align: left;
+  background-color: var(--background);
+  padding: 8px;
+}
+
+.table td {
+  
+}
+.table td div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.table tbody tr {
+  margin: 16px 0;
+}

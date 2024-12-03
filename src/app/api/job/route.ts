@@ -1,10 +1,11 @@
 import { auth } from '@/auth';
 import dbConnect from '@/lib/mongodb';
 import Job from '@/models/job';
-import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
+import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     await dbConnect();
 
@@ -12,29 +13,54 @@ export async function GET(request) {
     const page = Number(searchParams.get('page')) || 1;
     const limit = Number(searchParams.get('limit')) || 10;
     const companyId = searchParams.get('companyId');
+    const count = Boolean(searchParams.get('count')) || false;
+    const sortOrder = searchParams.get('order') || 'desc';
     const skip = (page - 1) * limit;
 
     if (companyId) {
-      const job = await Job.findOne({ companyId }).populate('companyId');
-      if (!job) {
+      
+      const jobs = await Job.find({ companyId })
+        .populate('companyId')
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+      if (!jobs.length) {
         return NextResponse.json({ message: 'Job not found' }, { status: 404 });
       }
-      return NextResponse.json({ data: job }, { status: 200 });
+      if (count) {
+        const numJobs = await Job.countDocuments({ companyId });
+        return NextResponse.json(
+          { data: jobs, total: numJobs },
+          { status: 200 },
+        );
+      }
+      return NextResponse.json({ data: jobs }, { status: 200 });
     }
 
-    const jobs = await Job.find().populate('companyId').skip(skip).limit(limit);
+    const jobs = await Job.find()
+      .populate('companyId')
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
     if (!jobs.length) {
       return NextResponse.json({ message: 'No jobs found' }, { status: 404 });
+    }
+    if (count) {
+      const numJobs = await Job.countDocuments();
+      return NextResponse.json({ data: jobs, total: numJobs }, { status: 200 });
     }
 
     return NextResponse.json({ data: jobs }, { status: 200 });
   } catch (error) {
     console.error('GET /jobs error:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     const data = await request.json();
@@ -49,14 +75,23 @@ export async function POST(request) {
     const newJob = new Job({ ...data, companyId: user._id });
     await newJob.save();
 
-    return NextResponse.json({ message: 'Job created successfully' }, { status: 201 });
+    return NextResponse.json(
+      { message: 'Job created successfully' },
+      { status: 201 },
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       console.error('Validation error:', error);
-      return NextResponse.json({ message: error.issues[0]?.message || 'Invalid data' }, { status: 400 });
+      return NextResponse.json(
+        { message: error.issues[0]?.message || 'Invalid data' },
+        { status: 400 },
+      );
     }
 
     console.error('POST /jobs error:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }

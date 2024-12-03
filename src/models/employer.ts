@@ -18,6 +18,7 @@ interface IEmployer {
   phoneNumber: string;
   address: string;
   email: string;
+  savedCandidate: Schema.Types.ObjectId[];
 }
 
 export interface IEmployerDocument extends IEmployer, Document {}
@@ -81,6 +82,9 @@ const employerSchema: Schema<IEmployerDocument> = new Schema(
     links: {
       type: Map,
       of: String,
+    },
+    savedCandidate: {
+      type: [Schema.Types.ObjectId],
     },
   },
   { timestamps: true },
