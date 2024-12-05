@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary {
+  display: flex;
+  gap: 16px;
+}
+
+.openJobs,
+.savedCanidate {
+  display: flex;
+  padding: 24px;
+  border-radius: 8px;
+  align-items: center;
+  font-size: 14px;
+  justify-content: space-between;
+  width: 240px;
+}
+
+.openJobs {
+  background-color: rgba(0, 140, 255, 0.169);
+}
+.savedCanidate {
+  background-color: rgba(255, 255, 0, 0.169);
+}
+
+.openJobs .content,
+.savedCanidate .content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.openJobs .icon,
+.savedCanidate .icon {
+  background-color: var(--secondary);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.savedCanidate .icon svg {
+  background-color: rgba(255, 255, 0, 0.169);
+}
+
+.view {
+  display: flex;
+  justify-content: space-between;
+}
+
+.view button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}

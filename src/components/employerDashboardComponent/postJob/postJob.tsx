@@ -1,8 +1,13 @@
 'use client';
 
-import { IEmployerDocument } from '@/models/employer';
-import { IJob } from '@/models/job';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { IJob, IJobDocument } from '@/models/job';
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import styles from './postJob.module.css';
 import TagInput from '@/components/tagInput/tagInput';
 import { benefits, salaryType, tagsList, type } from '@/lib/data/jobInfo';
@@ -18,7 +23,15 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import Modal from '@/components/modal/modal';
 
-const PostJob = ({ employer, switchTabs }: { employer: null | IEmployerDocument; switchTabs: () => void }) => {
+const PostJob = ({
+  setCount,
+  switchTabs,
+  setRecentJobs,
+}: {
+  setCount: Dispatch<SetStateAction<number>>;
+  switchTabs: () => void;
+  setRecentJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
+}) => {
   const [formData, setFormData] = useState<IJob>({
     title: '',
     tags: [],
@@ -58,12 +71,19 @@ const PostJob = ({ employer, switchTabs }: { employer: null | IEmployerDocument;
     setLoading(true);
     try {
       const res = await axios.post('/api/job', formData);
-      setIsOpen(true)
-      
+      setIsOpen(true);
+      setRecentJobs((prev) => {
+        if (!prev) return [formData] as IJobDocument[];
+        if (prev?.length >= 5) prev?.pop();
+        prev?.unshift(formData as IJobDocument);
+        return prev;
+      });
+      setCount((prev) => prev++);
     } catch (e) {
       toast.error('An error occured');
+      console.log(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -426,26 +446,18 @@ const PostJob = ({ employer, switchTabs }: { employer: null | IEmployerDocument;
           )}
         </button>
       </div>
-      <Modal
-        title=''
-        isLoading={loading}
-        isOpen={isOpen}
-        onClose={closeModal}
-      >
+      <Modal title='' isLoading={loading} isOpen={isOpen} onClose={closeModal}>
         <div>
           <h3>🎉 Congratulations, Your Job is Successfully posted!</h3>
-        <button
-          onClick={switchTabs}
-          className={styles.viewLink}
-        >
-          {loading ? (
-            <span>Uploading</span>
-          ) : (
-            <>
-              <span>View Jobs</span> <ArrowRight height={18} width={18} />
-            </>
-          )}
-        </button>
+          <button onClick={switchTabs} className={styles.viewLink}>
+            {loading ? (
+              <span>Uploading</span>
+            ) : (
+              <>
+                <span>View Jobs</span> <ArrowRight height={18} width={18} />
+              </>
+            )}
+          </button>
         </div>
       </Modal>
     </div>

@@ -20,12 +20,18 @@ import Overview from '@/components/employerDashboardComponent/overview/overview'
 import PostJob from '@/components/employerDashboardComponent/postJob/postJob';
 import { useRouter } from 'next/navigation';
 import MyJobs from '@/components/employerDashboardComponent/myJobs/myJobs';
+import { IJobDocument } from '@/models/job';
 
 const EmployerDashboard = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
+  const [count, setCount] = useState(0);
+  const [openJobs, setOpenJobs] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [employer, setEmployer] = useState<IEmployerDocument | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [currentJobs, setCurrentJobs] = useState<IJobDocument[] | null>(null);
+  const [recentJobs, setRecentJobs] = useState<IJobDocument[] | null>(null);
   const toggleDrawer = () => setIsOpen(!isOpen);
   const closeDrawer = () => setIsOpen(false);
   const session = useSession();
@@ -35,7 +41,17 @@ const EmployerDashboard = () => {
     {
       name: 'Overview',
       icon: <Layers />,
-      component: <Overview employer={employer} />,
+      component: (
+        <Overview
+          employer={employer}
+          userId={userId || ''}
+          recentJobs={recentJobs}
+          setRecentJobs={setRecentJobs}
+          openJobs={openJobs}
+          setCount={setCount}
+          switchTabs={() => handleChange(3)}
+        />
+      ),
     },
     {
       name: 'Employers Profile',
@@ -45,12 +61,28 @@ const EmployerDashboard = () => {
     {
       name: 'Post a Job',
       icon: <CirclePlus />,
-      component: <PostJob employer={employer} switchTabs={() => handleChange(3)} />,
+      component: (
+        <PostJob
+          setCount={setCount}
+          switchTabs={() => handleChange(3)}
+          setRecentJobs={setRecentJobs}
+        />
+      ),
     },
     {
       name: 'My Jobs',
       icon: <BriefcaseBusiness />,
-      component: <MyJobs employer={employer} userId={userId} />,
+      component: (
+        <MyJobs
+          employer={employer}
+          userId={userId || ''}
+          currentJobs={currentJobs}
+          setCurrentJobs={setCurrentJobs}
+          count={count}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      ),
     },
     {
       name: 'Saved Candidates',
@@ -78,15 +110,11 @@ const EmployerDashboard = () => {
     setActiveTab(tabIndex);
   };
 
-  
-
   useEffect(() => {
     const getEmployer = async () => {
       try {
         if (!userId || userId === '') return;
-        const { data } = await axios.get(
-          `/api/employer/${userId}`,
-        );
+        const { data } = await axios.get(`/api/employer/${userId}`);
         const employer = data.data as IEmployerDocument;
         setEmployer(employer);
       } catch (e) {
@@ -95,7 +123,24 @@ const EmployerDashboard = () => {
         }
       }
     };
-    if (session?.data?.user?._id) getEmployer();
+    const fetchJobs = async () => {
+      try {
+        const res = await axios.get(
+          `/api/job?page=${currentPage}userId=${userId}&count=true&limit=${10}`,
+        );
+        setCurrentJobs(res.data.data);
+        setRecentJobs(res.data.data);
+        const overview = await axios.get(`/api/job/overview?userId=${userId}`);
+        setCount(overview.data.total || 0);
+        setOpenJobs(overview.data.openJobs);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    if (session?.data?.user?._id) {
+      getEmployer();
+      fetchJobs();
+    }
   }, [session]);
 
   const Drawer = () => (
