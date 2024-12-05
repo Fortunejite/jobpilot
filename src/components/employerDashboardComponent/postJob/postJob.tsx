@@ -22,6 +22,39 @@ import fetchCountries from '@/lib/getCountries';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Modal from '@/components/modal/modal';
+import { z } from 'zod';
+
+const jobSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  tags: z.array(z.string()).nonempty({ message: 'At least one tag is required' }),
+  role: z.string().min(1, { message: 'Role is required' }),
+  minSalary: z.number().nonnegative({ message: 'Minimum salary must be 0 or more' }),
+  maxSalary: z.number().nonnegative({ message: 'Maximum salary must be 0 or more' }),
+  salaryType: z.enum(['Hourly', 'Monthly', 'Project Basis']),
+  education: z.string().min(1, { message: 'Education level is required' }),
+  exprience: z.string().min(1, { message: 'Experience is required' }),
+  type: z.enum(['Full Time', 'Part Time', 'Contract', 'FreeLance', 'Internship']),
+  vacancies: z.number().min(1, { message: 'There must be at least one vacancy' }),
+  expire: z.date(),
+  country: z.string().min(1, { message: 'Country is required' }),
+  benefits: z.array(z.string()).optional(),
+  description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
+  applyOn: z.enum(['jobpilot', 'email', 'other']),
+  skills: z.array(z.string()).optional(),
+  applicatiions: z.array(z.string()).optional(),
+})
+
+const validateJob = (data: IJob) => {
+  try {
+    return jobSchema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Validation errors:", error.errors);
+      toast.error(error.issues[0]?.message)
+    }
+    returm null
+  }
+}
 
 const PostJob = ({
   setCount,
@@ -70,6 +103,7 @@ const PostJob = ({
     setFormData((prev) => ({ ...prev, tags }));
     setLoading(true);
     try {
+      if (!validateJob(formData)) return setLoading(false);
       const res = await axios.post('/api/job', formData);
       setIsOpen(true);
       setRecentJobs((prev) => {
