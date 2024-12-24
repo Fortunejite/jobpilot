@@ -2,7 +2,6 @@
 
 import {
   ArrowRight,
-  BriefcaseBusiness,
   Building2,
   CircleUser,
   Eye,

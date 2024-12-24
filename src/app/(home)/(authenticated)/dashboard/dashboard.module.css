@@ -52,6 +52,7 @@
   padding: 8px;
   border-radius: 8px;
   margin-top: 8px;
+  cursor: pointer;
 }
 
 .drawerOverlay {
@@ -117,6 +118,7 @@ color: var(--primary);
   }
   .container main {
     padding: 16px 0;
+    width: 100%;
   }
   .sideBar {
     padding: 8px 0;

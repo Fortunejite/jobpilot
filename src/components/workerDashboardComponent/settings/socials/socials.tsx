@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useState, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
@@ -124,14 +124,19 @@ const Socials = ({ user }: { user: null | worker }) => {
     Object.entries(formData.links).forEach(([key, value]) => {
       if (value === '') removeLink(key);
     });
-    const res = await axios.patch(`/api/workers/${user?._id}`, formData);
-    if (res.status != 201) {
+    try {
+      await axios.patch(`/api/workers/${user?._id}`, formData);
+      return toast.success('Updated successfully.');
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return toast.error(e.response?.data.msg || 'An error occured');
+      } else {
+        console.log(e);
+        return toast.error('An error occured');
+      }
+    } finally {
       setLoading(false);
-      return toast.error('An error occured');
     }
-    toast.success('Updated successfully.');
-    setLoading(false);
-    return;
   };
 
   return (

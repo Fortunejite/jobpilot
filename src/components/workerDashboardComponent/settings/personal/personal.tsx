@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import styles from './personal.module.css';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import { CirclePlus, File, Link } from 'lucide-react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import Image from 'next/image';
@@ -185,14 +185,19 @@ const Personal = ({ user }: { user: null | worker }) => {
       uploadFile(file);
       return;
     } else {
-      const res = await axios.patch(`/api/workers/${user?._id}`, formData);
-      if (res.status != 201) {
+      try {
+        await axios.patch(`/api/workers/${user?._id}`, formData);
+        return toast.success('Updated successfully.');
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          return toast.error(e.response?.data.msg || 'An error occured');
+        } else {
+          console.log(e);
+          return toast.error('An error occured');
+        }
+      } finally {
         setLoading(false);
-        return toast.error('An error occured');
       }
-      toast.success('Updated successfully.');
-      setLoading(false);
-      return;
     }
   };
 

@@ -1,10 +1,11 @@
 import { auth } from '@/auth';
 import dbConnect from '@/lib/mongodb';
+import Employer from '@/models/employer';
 import Job from '@/models/job';
 import mongoose from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-import { z } from 'zod'
+import { z } from 'zod';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get('order') || 'desc';
     const skip = (page - 1) * limit;
 
-    const query: any = {};
+    const query: { companyId?: mongoose.Types.ObjectId } = {};
     if (userId) {
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return NextResponse.json(
@@ -56,27 +57,46 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const jobSchema = z.object({
-  title: z.string().min(1, { message: 'Title is required' }),
-  tags: z.array(z.string()).nonempty({ message: 'At least one tag is required' }),
-  role: z.string().min(1, { message: 'Role is required' }),
-  minSalary: z.number().nonnegative({ message: 'Minimum salary must be 0 or more' }),
-  maxSalary: z.number().nonnegative({ message: 'Maximum salary must be 0 or more' }),
-  salaryType: z.enum(['Hourly', 'Monthly', 'Project Basis']),
-  education: z.string().min(1, { message: 'Education level is required' }),
-  exprience: z.string().min(1, { message: 'Experience is required' }),
-  type: z.enum(['Full Time', 'Part Time', 'Contract', 'FreeLance', 'Internship']),
-  vacancies: z.number().min(1, { message: 'There must be at least one vacancy' }),
-  expire: z.date(),
-  country: z.string().min(1, { message: 'Country is required' }),
-  benefits: z.array(z.string()).optional(),
-  description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
-  applyOn: z.enum(['jobpilot', 'email', 'other']),
-  skills: z.array(z.string()).optional(),
-  applicatiions: z.array(z.string()).optional(),
-})
+    title: z.string().min(1, { message: 'Title is required' }),
+    tags: z
+      .array(z.string())
+      .nonempty({ message: 'At least one tag is required' }),
+    role: z.string().min(1, { message: 'Role is required' }),
+    minSalary: z
+      .number()
+      .nonnegative({ message: 'Minimum salary must be 0 or more' }),
+    maxSalary: z
+      .number()
+      .nonnegative({ message: 'Maximum salary must be 0 or more' }),
+    salaryType: z.enum(['Hourly', 'Monthly', 'Project Basis']),
+    education: z.string().min(1, { message: 'Education level is required' }),
+    exprience: z.string().min(1, { message: 'Experience is required' }),
+    type: z.enum([
+      'Full Time',
+      'Part Time',
+      'Contract',
+      'FreeLance',
+      'Internship',
+    ]),
+    vacancies: z
+      .number()
+      .min(1, { message: 'There must be at least one vacancy' }),
+    expire: z.date(),
+    country: z.string().min(1, { message: 'Country is required' }),
+    benefits: z.array(z.string()).optional(),
+    description: z
+      .string()
+      .min(10, { message: 'Description must be at least 10 characters' }),
+    applyOn: z.enum(['jobpilot', 'email', 'other']),
+    skills: z.array(z.string()).optional(),
+    applicatiions: z.array(z.string()).optional(),
+  });
+
   try {
     await dbConnect();
-    const data = await request.json();
+    const body = await request.json();
+    body.expire = new Date(body.expire)
+    const data = jobSchema.parse(body);
 
     const session = await auth();
     const user = session?.user;
@@ -84,8 +104,13 @@ export async function POST(request: NextRequest) {
     if (!user || user.role !== 'employer') {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
     }
+    
+    const employer = await  Employer.findOne({userId: user._id})
+    if (!employer) {
+      return NextResponse.json({ message: 'Unable to fetch company' }, { status: 501 });
+    }
 
-    const newJob = new Job({ ...data, companyId: user._id });
+    const newJob = new Job({ ...data, companyId: employer._id });
     await newJob.save();
 
     return NextResponse.json(

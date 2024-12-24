@@ -24,7 +24,7 @@
   background-color: rgba(0, 140, 255, 0.169);
 }
 .savedCanidate {
-  background-color: rgba(255, 255, 0, 0.169);
+  background-color: rgba(255, 174, 0, 0.169);
 }
 
 .openJobs .content,
@@ -41,8 +41,11 @@
   border-radius: 8px;
 }
 
+.openJobs .icon svg {
+  stroke: rgb(0, 140, 255);
+}
 .savedCanidate .icon svg {
-  background-color: rgba(255, 255, 0, 0.169);
+  stroke: rgb(255, 174, 0);
 }
 
 .view {
@@ -58,4 +61,14 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .summary {
+    flex-direction: column;
+  }
+  
+  .openJobs, .savedCanidate{
+    width: 100%;
+  }
 }

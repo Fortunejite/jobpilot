@@ -1,0 +1,276 @@
+.container main{
+  padding: 16px 64px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px
+}
+
+.container header {
+  padding: 16px 64px;
+  background-color: var(--grey);
+  display: flex;
+  justify-content: space-between;
+}
+
+.container header span {
+  color: var(--text);
+  font-weight: bold;
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.top .left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.top .left .imageWrapper {
+  position: relative;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.top .left .imageWrapper img {
+  object-fit: cover;
+}
+
+/* .top .left .companyDetails {
+  display: flex;
+  gap: 8px;
+} */
+.top .left .companySubDetails {
+  display: flex;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.top .left .companySubDetails span{
+  font-size: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: rgb(0, 164, 0);
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top .right {
+  display: flex;
+  gap: 8px;
+}
+
+.top .right div {
+  padding: 8px;
+  background-color: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.top .right div svg {
+  stroke: var(--primary)
+}
+
+.top .right button, .submitBtn, .cancelBtn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  border: none;
+  cursor: pointer;
+}
+.top .right .favourite {
+  stroke: none;
+  fill: var(--primary);
+}
+
+.content {
+  display: flex;
+  gap: 16px;
+}
+
+.content .left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--text);
+  flex: 2 60vw;
+  height: fit-content;
+}
+
+.content .right {
+  flex: 1 40vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px
+}
+
+.content .right section {
+  border: 1px solid var(--foreground);
+  border-radius: 4px;
+  padding: 24px 16px;
+  display: flex;
+}
+
+.content .right section div {
+  flex: 1;
+}
+
+.content .right section .heading {
+  color: var(--text);
+}
+
+.content .right section span {
+  font-size: 14px;
+}
+
+.salary, .location {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px
+}
+
+.salary {
+  border-right: 1px solid var(--foreground);
+}
+
+.salaryAmount {
+  color:  rgb(0, 164, 0);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.location svg {
+  stroke: var(--primary);
+}
+
+.benefits, .overview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefits div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.benefit {
+  padding: 8px;
+  background-color: var(--grey);
+  color:  rgb(0, 164, 0);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.overview svg {
+  stroke: var(--primary)
+}
+
+.overview .cover {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+}
+
+.overview .item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.overview .item p {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text)
+}
+
+.overview .item span {
+  text-transform: capitalize;
+  font-size: 8px;
+}
+
+.tags {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+}
+
+.tags div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 8px;
+  background-color: var(--grey);
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.entry {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  flex: 1 calc(50% - 8px);
+  margin-bottom: 8px;
+}
+
+.entry select {
+  border-radius: 4px;
+  border: 1px solid grey;
+  padding: 1rem;
+}
+
+.markdown {
+  flex: 1 1 100%;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  margin: '0 auto';
+  padding: '20px';
+}
+
+.entry label, .markdown label {
+  color: var(--text);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.cancelBtn {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .top, .content {
+    flex-direction: column;
+    gap: 16px
+  }
+}

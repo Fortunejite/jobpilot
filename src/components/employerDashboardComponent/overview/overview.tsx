@@ -5,7 +5,17 @@ import styles from './overview.module.css';
 import JobTable from '@/components/jobTable/jobTable';
 import { IJobDocument } from '@/models/job';
 import { Dispatch, SetStateAction } from 'react';
-import { ArrowRight, BriefcaseBusiness, Contact, IdCard } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, IdCard } from 'lucide-react';
+
+interface OverviewProps {
+  employer: null | IEmployerDocument;
+  userId: string;
+  recentJobs: IJobDocument[] | null;
+  setRecentJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
+  openJobs: number;
+  setCount: Dispatch<SetStateAction<number>>;
+  switchTabs: () => void;
+}
 
 const Overview = ({
   employer,
@@ -15,15 +25,11 @@ const Overview = ({
   openJobs,
   setCount,
   switchTabs,
-}: {
-  employer: null | IEmployerDocument;
-  userId: string;
-  recentJobs: IJobDocument[] | null;
-  setRecentJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
-  openJobs: number;
-  setCount: Dispatch<SetStateAction<number>>;
-  switchTabs: () => void;
-}) => {
+}: OverviewProps) => {
+  const handleSwitchTabs = () => {
+    switchTabs();
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.greeting}>
@@ -51,23 +57,27 @@ const Overview = ({
         </div>
       </div>
       <div>
-        <div className={styles.view}>
-          <h3>Recently Posted Jobs</h3>
-          <button onClick={switchTabs}>
-            <span>View All</span> <ArrowRight />
-          </button>
-        </div>
-        <JobTable
-          limit={5}
-          pagination={false}
-          employer={employer}
-          jobs={recentJobs}
-          setJobs={setRecentJobs}
-          userId={userId}
-          currentPage={0}
-          setCurrentPage={setCount}
-          count={0}
-        />
+        {recentJobs && (
+          <>
+            <div className={styles.view}>
+              <h3>Recently Posted Jobs</h3>
+              <button onClick={handleSwitchTabs}>
+                <span>View All</span> <ArrowRight />
+              </button>
+            </div>
+            <JobTable
+              limit={5}
+              pagination={false}
+              employer={employer}
+              jobs={recentJobs}
+              setJobs={setRecentJobs}
+              userId={userId}
+              currentPage={0}
+              setCurrentPage={setCount}
+              count={0}
+            />{' '}
+          </>
+        )}
       </div>
     </div>
   );

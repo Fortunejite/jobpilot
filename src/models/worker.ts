@@ -23,7 +23,7 @@ interface IWorker {
   links: {
     [x: string]: string;
   };
-  favouriteJobs? : string[]
+  favouriteJobs : string[]
 }
 
 export interface IWorkerDocument extends IWorker, Document {}

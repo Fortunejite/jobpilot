@@ -31,6 +31,7 @@ const jobSchema: Schema<IJobDocument> = new Schema(
   {
     companyId: {
       type: Schema.Types.ObjectId,
+      ref: 'Employer',
       required: true,
     },
     title: {

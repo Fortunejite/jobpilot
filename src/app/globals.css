@@ -25,7 +25,7 @@ body {
 
 body {
   color: var(--foreground);
-  font-size: 18px;
+  font-size: 16px;
   background: var(--secondary);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -59,4 +59,8 @@ input, textarea, select, span {
 
 input:focus, select:focus, textarea:focus{
   outline: none;
+}
+
+button:disabled{
+  opacity: 0.5;
 }

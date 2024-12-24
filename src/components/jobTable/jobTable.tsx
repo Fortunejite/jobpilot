@@ -4,17 +4,26 @@ import axios, { AxiosError } from 'axios';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styles from './jobTable.module.css';
 import {
-  ArrowLeft,
-  ArrowRight,
   CircleCheck,
   CirclePlus,
   CircleX,
   EllipsisVertical,
   Eye,
-  FastForward,
-  Rewind,
   UsersRound,
 } from 'lucide-react';
+import Pagination from '../pagination/pagination';
+
+interface Props {
+  limit: number;
+  pagination: boolean;
+  employer: null | IEmployerDocument;
+  jobs: IJobDocument[] | null;
+  setJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
+  userId: string;
+  count: number;
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+}
 
 const DropDown = ({
   isOpen,
@@ -59,17 +68,7 @@ const JobTable = ({
   count,
   currentPage,
   setCurrentPage,
-}: {
-  limit: number;
-  pagination: boolean;
-  employer: null | IEmployerDocument;
-  jobs: IJobDocument[] | null;
-  setJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
-  userId: string;
-  count: number;
-  currentPage: number;
-  setCurrentPage: Dispatch<SetStateAction<number>>;
-}) => {
+}: Props) => {
   const totalPages = Math.ceil(count / limit);
   const [openDropdownId, setOpenDropdownId] = useState<null | number>(null);
 
@@ -140,7 +139,7 @@ const JobTable = ({
             {jobs.map((job, index) => {
               if (index >= limit) return null;
               const date = new Date(job.expire);
-              const status = date > new Date() ? 'Active' : 'Expired';
+              const status = date >= new Date() ? 'Active' : 'Expired';
               const icon = status === 'Active' ? <CircleCheck /> : <CircleX />;
               const timeRemaining =
                 status === 'Active'
@@ -148,7 +147,7 @@ const JobTable = ({
                   : formatDate(date);
 
               return (
-                <tr>
+                <tr key={index}>
                   <td>
                     <div className={styles.jobs}>
                       <p>
@@ -189,52 +188,11 @@ const JobTable = ({
           </tbody>
         </table>
         {pagination && (
-          <div className={styles.pagination}>
-            <button
-              className={styles.arrow}
-              onClick={() => changePage(currentPage - 5)}
-              disabled={currentPage === 1}
-            >
-              <Rewind />
-            </button>
-            <button
-              className={styles.arrow}
-              onClick={() => changePage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <ArrowLeft />
-            </button>
-            <div className={styles.pages}>
-              {Array.from({ length: totalPages }, (_, index) => {
-                if (index + 1 - currentPage < 5 || index + 1 + currentPage < 5)
-                  return (
-                    <button
-                      key={index}
-                      className={`${styles.page} ${
-                        index + 1 === currentPage ? styles.active : ''
-                      }`}
-                      onClick={() => changePage(index + 1)}
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </button>
-                  );
-              })}
-            </div>
-            <button
-              onClick={() => changePage(currentPage + 1)}
-              className={styles.arrow}
-              disabled={currentPage === totalPages}
-            >
-              <ArrowRight />
-            </button>
-            <button
-              onClick={() => changePage(currentPage + 5)}
-              className={styles.arrow}
-              disabled={currentPage === totalPages}
-            >
-              <FastForward />
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            changePage={changePage}
+          />
         )}
       </div>
     );

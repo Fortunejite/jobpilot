@@ -20,7 +20,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import fetchCountries from '@/lib/getCountries';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Modal from '@/components/modal/modal';
 import { z } from 'zod';
 
@@ -52,7 +52,7 @@ const validateJob = (data: IJob) => {
       console.error("Validation errors:", error.errors);
       toast.error(error.issues[0]?.message)
     }
-    returm null
+    return null
   }
 }
 
@@ -100,11 +100,12 @@ const PostJob = ({
   const closeModal = () => setIsOpen(false);
 
   const handleSubmit = async () => {
-    setFormData((prev) => ({ ...prev, tags }));
     setLoading(true);
     try {
-      if (!validateJob(formData)) return setLoading(false);
-      const res = await axios.post('/api/job', formData);
+      setFormData((prev) => ({ ...prev, tags }));
+      
+      if (!validateJob({...formData, tags})) return setLoading(false);
+      await axios.post('/api/job', formData);
       setIsOpen(true);
       setRecentJobs((prev) => {
         if (!prev) return [formData] as IJobDocument[];
@@ -114,8 +115,14 @@ const PostJob = ({
       });
       setCount((prev) => prev++);
     } catch (e) {
-      toast.error('An error occured');
-      console.log(e);
+      if (e instanceof AxiosError) {
+        setLoading(false);
+        return toast.error(e.response?.data.message || 'An error occured');
+      } else {
+        setLoading(false);
+        console.log(e);
+        return toast.error('An error occured');
+      }
     } finally {
       setLoading(false);
     }
@@ -128,6 +135,7 @@ const PostJob = ({
       setFormData((prev) => ({ ...prev, description: e }));
       return;
     }
+    if (e.target.type === 'number') return setFormData((prev) => ({ ...prev, [e.target.id]:  Number(e.target.value) }));
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
@@ -356,6 +364,7 @@ const PostJob = ({
               if (formData.benefits.includes(benefit)) {
                 return (
                   <span
+                  key={i}
                     onClick={() => toggleBenefit(i)}
                     className={`${styles.benefit} ${styles.selected}`}
                   >
@@ -365,6 +374,7 @@ const PostJob = ({
               }
               return (
                 <span
+                key={i}
                   onClick={() => toggleBenefit(i)}
                   className={styles.benefit}
                 >

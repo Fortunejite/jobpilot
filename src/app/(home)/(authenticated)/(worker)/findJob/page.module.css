@@ -1,0 +1,153 @@
+.container main{
+  padding: 16px 64px;
+}
+
+.top {
+  padding: 16px 64px;
+  background-color: var(--grey);
+  display: flex;
+  justify-content: space-between;
+}
+
+.top span {
+  color: var(--text);
+  font-weight: bold;
+}
+
+.search {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--secondary);
+  gap: 8px;
+  border-radius: 4px;
+  border: 1px solid grey;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+}
+
+.searchBar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  flex: 2;
+}
+
+.searchBar input {
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+
+.searchBar svg {
+  color: var(--primary);
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filters button {
+  border: none;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 16px;
+  font-weight: bold;
+  width: fit-content;
+}
+
+.primaryBtn{
+  background-color: var(--primary);
+  color: var(--secondary);
+}
+
+.jobs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 16px;
+  grid-row-gap: 16px;
+  margin: 16px 0;
+}
+
+.job {
+  padding: 16px;
+  border: 1px solid var(--foreground);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.job h3, .job .details {
+  cursor: pointer;
+}
+
+.job .details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.job .details .type {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #05ff0547;
+  color: rgb(0, 164, 0);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.job .company {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.job .company .logo {
+  position: relative;
+  height: 50px;
+  width: 50px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.job .company .logo img {
+  object-fit: cover;
+}
+
+.job .company .info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: auto;
+}
+
+.job .company .info .companyName {
+  font-weight: bold;
+  color: var(--text);
+}
+
+.job .favourite {
+  stroke: none;
+  fill: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .jobs {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
+    margin: 16px 0;
+  }
+}

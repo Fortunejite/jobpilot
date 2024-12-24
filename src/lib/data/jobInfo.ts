@@ -5,7 +5,7 @@ export const salaryType = ['Hourly', 'Monthly', 'Project Basis'];
 export const type = [
   'Full Time',
   'Part Time',
-  'Intern',
+  'Internship',
   'Contractual',
   'FreeLance',
 ];

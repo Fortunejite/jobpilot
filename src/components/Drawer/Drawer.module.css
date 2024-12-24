@@ -1,81 +1,78 @@
 /* Mobile Drawer styles */
 .menuButton {
-    display: none;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 24px;
-    z-index: 1000;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .drawerOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: none;
-  }
-  
-  .showOverlay {
-    display: block;
-  }
-  
-  .drawer {
-    position: fixed;
-    top: -100vw;
-    left: 0;
-    width: 100vw;
-    background-color: var(--background);
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    padding: 20px;
-    transition: top 0.3s ease;
-  }
-  
-  .open {
-    top: 0;
-  }
-  
-  .closeButton {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    margin-left: auto;
-    display: block;
-  }
-  
-  .drawer ul {
-    list-style: none;
-    
-  }
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 24px;
+  z-index: 1000;
+  cursor: pointer;
+  border-radius: 4px;
+}
 
+.drawerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
 
-  .drawer ul .active {
+.showOverlay {
+  display: block;
+}
+
+.drawer {
+  position: fixed;
+  top: -100vw;
+  left: 0;
+  width: 100vw;
+  background-color: var(--background);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 20px;
+  transition: top 0.3s ease;
+}
+
+.open {
+  top: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-left: auto;
+  display: block;
+}
+
+.drawer ul {
+  list-style: none;
+}
+
+.drawer ul .active {
   border-bottom: 4px solid var(--primary);
   color: var(--primary);
 }
-  .drawer ul li {
-    margin: 16px 0;
-    display: flex;
-    justify-content: center;
-    font-size: 18px;
+.drawer ul li {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .menuButton {
+    display: block;
   }
-  
-  
-  /* Mobile-specific styles */
-  @media (max-width: 768px) {
-    .menuButton {
-      display: block;
-    }
-  }
+}

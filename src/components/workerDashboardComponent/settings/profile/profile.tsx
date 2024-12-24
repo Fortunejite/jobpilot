@@ -1,7 +1,7 @@
 import styles from './profile.module.css';
 import { worker } from '@/app/(home)/(authenticated)/dashboard/workerDashboard';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import ReactMde, { Command } from 'react-mde';
 import ReactMarkdown from 'react-markdown';
@@ -23,6 +23,25 @@ const Profile = ({ user }: { user: null | worker }) => {
         };
       }[]
   >(null);
+  const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
+  useEffect(() => {
+    const getCountries = async () => {
+      try {
+        setCountries(await fetchCountries());
+        setCountries((prev) => {
+          if (!prev) return null;
+          return prev.sort((a, b) => {
+            const nameA = a.name.common.toLowerCase();
+            const nameB = b.name.common.toLowerCase();
+            return nameA.localeCompare(nameB);
+          });
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getCountries();
+  }, []);
   if (!formData) return null;
 
   const handleDateChange = (date: Date | null) => {
@@ -53,8 +72,6 @@ const Profile = ({ user }: { user: null | worker }) => {
     });
   };
 
-  const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write');
-
   const boldCommand: Command = {
     icon: () => <strong>B</strong>,
     execute: ({ initialState, textApi }) => {
@@ -74,36 +91,21 @@ const Profile = ({ user }: { user: null | worker }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    const res = await axios.patch(`/api/workers/${user?._id}`, formData);
-    if (res.status != 201) {
-      setLoading(false);
-      return toast.error('An error occured');
-    }
-
-    toast.success('Updated successfully.');
-    setLoading(false);
-    return;
-  };
-
-  useEffect(() => {
-    const getCountries = async () => {
-      try {
-        setCountries(await fetchCountries());
-        setCountries((prev) => {
-          if (!prev) return null;
-          return prev.sort((a, b) => {
-            const nameA = a.name.common.toLowerCase();
-            const nameB = b.name.common.toLowerCase();
-            return nameA.localeCompare(nameB);
-          });
-        });
-      } catch (e) {
+    try {
+      await axios.patch(`/api/workers/${user?._id}`, formData);
+      toast.success('Updated successfully.');
+      return;
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return toast.error(e.response?.data.msg || 'An error occured');
+      } else {
         console.log(e);
+        return toast.error('An error occured');
       }
-    };
-    getCountries();
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>

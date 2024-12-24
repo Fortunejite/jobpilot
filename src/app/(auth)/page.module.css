@@ -9,7 +9,7 @@
   flex: 1 1 calc(50% - 16px);
   padding: 16px 64px;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   gap: 32px;
   min-height: 100%;
 }
