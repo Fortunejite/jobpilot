@@ -62,13 +62,12 @@ const FindJob = () => {
   const applied = job?.applicatiions.filter(
     (application) => application.userId.toString() === userId,
   );
-  
+
   useEffect(() => {
     if (applied && applied.length > 0) {
       setHasApplied(true);
     }
   }, [applied]);
-  
 
   const closeModal = () => setIsOpen(false);
 
@@ -120,7 +119,7 @@ const FindJob = () => {
     };
 
     fetchData();
-  }, []);
+  }, [params.id]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -139,7 +138,7 @@ const FindJob = () => {
     };
 
     fetchData();
-  }, [session]);
+  }, [session, userId]);
 
   const pickResume = (index: number) =>
     setModalData((prev) => ({ ...prev, resume: index }));
@@ -156,7 +155,7 @@ const FindJob = () => {
 
       await axios.post(`/api/job/${job?._id}/apply`, modalData);
       toast.success('Job applied successfully');
-      setHasApplied(true)
+      setHasApplied(true);
       closeModal();
     } catch (e) {
       if (e instanceof AxiosError) {
@@ -222,12 +221,16 @@ const FindJob = () => {
               <div onClick={() => toggleBookmark(job._id)}>
                 <Bookmark className={isFavourite ? styles.favourite : ''} />
               </div>
-              {!hasApplied ? (<button onClick={() => setIsOpen(true)}>
-                <span>Apply Now</span>
-                <ArrowRight />
-              </button>) : (<button>
-                <span>Applied!</span>
-              </button>)}
+              {!hasApplied ? (
+                <button onClick={() => setIsOpen(true)}>
+                  <span>Apply Now</span>
+                  <ArrowRight />
+                </button>
+              ) : (
+                <button>
+                  <span>Applied!</span>
+                </button>
+              )}
             </div>
           </div>
           <div className={styles.content}>

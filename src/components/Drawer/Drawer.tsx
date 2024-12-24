@@ -30,7 +30,7 @@ const links: LinkType[] = [
 ];
 
 const MobileDrawer = () => {
-  const { isOpen, toggleDrawer, closeDrawer } = useDrawer();
+  const { isOpen, closeDrawer } = useDrawer();
   const pathname = usePathname();
 
   const session = useSession();

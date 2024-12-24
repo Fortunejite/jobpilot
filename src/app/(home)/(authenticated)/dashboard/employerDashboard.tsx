@@ -141,7 +141,7 @@ const EmployerDashboard = () => {
       getEmployer();
       fetchJobs();
     }
-  }, [session]);
+  }, [currentPage, router, session, userId]);
 
   const Drawer = () => (
     <div>

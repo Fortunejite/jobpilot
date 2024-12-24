@@ -13,7 +13,7 @@ import {
   teamSize,
 } from '@/lib/data/companyInfo';
 
-const foundingInfo = ({
+const FoundingInfo = ({
   handleSubmit,
   previous,
   formData,
@@ -180,4 +180,4 @@ const foundingInfo = ({
   );
 };
 
-export default foundingInfo;
+export default FoundingInfo;

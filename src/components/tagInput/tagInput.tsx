@@ -32,7 +32,7 @@ const TagInput = ({
     const code = e.key;
     const newTag = tag.trim();
     if ((code !== 'Enter' && code !== ',') || tag.length === 0) return;
-    if (!tags.includes(tag)) setTags((prev) => [...tags, newTag]);
+    if (!tags.includes(tag)) setTags((prev) => [...prev, newTag]);
     setTimeout(() => {
       setTag('');
     }, 0);
@@ -42,7 +42,7 @@ const TagInput = ({
     <div className={styles.container}>
       <div className={styles.tags}>
         {tags.map((tag, i) => (
-          <div className={styles.tag}>
+          <div key={i} className={styles.tag}>
             <span>{tag}</span>
             <X onClick={() => handleRemove(i)} height={18} width={18} />
           </div>
@@ -59,8 +59,8 @@ const TagInput = ({
         />
       ) : null}
       <datalist id='list'>
-        {tagsList.map((tag) => (
-          <option value={tag}></option>
+        {tagsList.map((tag, i) => (
+          <option key={i} value={tag}></option>
         ))}
       </datalist>
     </div>

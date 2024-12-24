@@ -20,6 +20,7 @@ export async function GET(
     }
 
     // Remove the password field before sending the response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
     return NextResponse.json({ data: userWithoutPassword }, { status: 200 });

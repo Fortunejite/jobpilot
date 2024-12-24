@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const userId = searchParams.get('userId');
 
-    const query: any = {};
+    const query: { companyId?: mongoose.Types.ObjectId } = {};
     if (!userId)
       return NextResponse.json(
         { message: 'Company ID is required' },

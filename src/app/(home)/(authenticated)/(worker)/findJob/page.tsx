@@ -35,7 +35,7 @@ const Job = ({
   return (
     <div className={styles.job}>
       <h3 onClick={handleJobClick}>{job.title}</h3>
-      <div className={styles.details} onClick={handleJobClick} >
+      <div className={styles.details} onClick={handleJobClick}>
         <span className={styles.type}>{job.type}</span>
         <span className={styles.salary}>
           {`Salary: $${job.minSalary} - $${job.maxSalary}`}
@@ -98,16 +98,16 @@ const FindJob = () => {
     if (!favouriteJobs) return;
 
     const isFavourite = favouriteJobs.includes(id);
-    let jobs
+    let jobs;
     if (isFavourite) {
-      jobs = favouriteJobs.filter((jobId) => jobId != id)
+      jobs = favouriteJobs.filter((jobId) => jobId != id);
     } else {
-      jobs = [...favouriteJobs, id]
+      jobs = [...favouriteJobs, id];
     }
-    setFavouriteJobs(jobs)
-    
+    setFavouriteJobs(jobs);
+
     try {
-      axios.patch(`/api/workers/${userId}/favouriteJobs`, jobs)
+      axios.patch(`/api/workers/${userId}/favouriteJobs`, jobs);
     } catch (e) {
       if (e instanceof AxiosError) {
         return toast.error(e.response?.data.message || 'An error occured');
@@ -143,7 +143,7 @@ const FindJob = () => {
       }
     };
     if (session?.data?.user?._id) fetchJobs();
-  }, [session]);
+  }, [currentPage, jobs, session, userId]);
 
   return (
     <div className={styles.container}>
