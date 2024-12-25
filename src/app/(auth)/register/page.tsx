@@ -59,32 +59,6 @@ const Signup = () => {
     try {
       setLoading(true);
       const data = validateCredentials(formData);
-      if (!data) return setLoading(false);
-      if (data.password != formData.confirmPassword) {
-        toast.error('Passowrds do not match');
-        setLoading(false);
-        return;
-      }
-      const res = await axios.post('/api/user', data);
-      if (res.status !== 201) {
-        toast.error(res.data.msg);
-        setLoading(false);
-        return;
-      }
-      signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        callbackUrl: data.isWorker ? '/' : '/welcome',
-      });
-      toast.success(res.data.msg);
-    } catch (e) {
-      setLoading(false);
-      console.log(e);
-      toast.error('An error occured');
-    }
-    try {
-      setLoading(true);
-      const data = validateCredentials(formData);
       if (!data) return
       if (data.password != formData.confirmPassword) {
         toast.error('Passowrds do not match');
