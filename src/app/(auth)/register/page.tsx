@@ -68,6 +68,7 @@ const Signup = () => {
       signIn('credentials', {
         email: formData.email,
         password: formData.password,
+        rememberMe: true,
         callbackUrl: data.isWorker ? '/' : '/welcome',
       });
       toast.success("Signin successfull");
