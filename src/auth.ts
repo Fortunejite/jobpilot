@@ -4,7 +4,7 @@ import Credentials from 'next-auth/providers/credentials';
 import NextAuth from 'next-auth';
 import type { NextAuthConfig, User } from 'next-auth';
 import { compare } from 'bcrypt';
-import { boolean, object, string } from 'zod';
+import { object, string } from 'zod';
 import UserModel from './models/user';
 import dbConnect from './lib/mongodb';
 
@@ -13,7 +13,7 @@ const userObject = object({
   password: string().min(6, {
     message: 'Password must be a minimum of 6 characters',
   }),
-  rememberMe: boolean(),
+  rememberMe: string().transform((value) => value.toLowerCase() === 'true')
 });
 
 const option: NextAuthConfig = {
@@ -27,7 +27,7 @@ const option: NextAuthConfig = {
       credentials: {},
       authorize: async (credentials) => {
         const { email, password, rememberMe } = userObject.parse(credentials);
-        await dbConnect()
+        await dbConnect();
         const user = await UserModel.findOne({ email });
         if (!user) {
           return null;
@@ -73,7 +73,6 @@ const option: NextAuthConfig = {
             token.email = email;
             token.fullName = existingUser?.fullName;
             token.username = existingUser?.username;
-
           }
         } else return token;
       } else {
@@ -84,10 +83,11 @@ const option: NextAuthConfig = {
           token.fullName = user.fullName;
           token.username = user.username;
           token.role = user.role;
-          const expires = account?.rememberMe
-          ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
-          : Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-          token.expires = new Date(expires)
+          const expires = user.rememberMe
+            ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
+            : Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+          token.expires = new Date(expires).toISOString();
         }
       }
 

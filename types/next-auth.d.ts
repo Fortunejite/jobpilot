@@ -11,7 +11,6 @@ declare module 'next-auth' {
       username: string;
       password?: string;
       role: "worker" | "employer"
-      expires: Date;
     };
   }
 
@@ -22,6 +21,7 @@ declare module 'next-auth' {
     username: string;
     password?: string;
     role: "worker" | "employer"
+    rememberMe: boolean;
   }
 }
 
@@ -33,6 +33,6 @@ declare module 'next-auth/jwt' {
     username: string;
     password?: string;
     role: "worker" | "employer";
-    expires: Date;
+    expires: string;
   }
 }
