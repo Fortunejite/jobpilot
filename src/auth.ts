@@ -4,7 +4,7 @@ import Credentials from 'next-auth/providers/credentials';
 import NextAuth from 'next-auth';
 import type { NextAuthConfig, User } from 'next-auth';
 import { compare } from 'bcrypt';
-import { object, string } from 'zod';
+import { boolean, object, string } from 'zod';
 import UserModel from './models/user';
 import dbConnect from './lib/mongodb';
 
@@ -13,6 +13,7 @@ const userObject = object({
   password: string().min(6, {
     message: 'Password must be a minimum of 6 characters',
   }),
+  rememberMe: boolean(),
 });
 
 const option: NextAuthConfig = {
@@ -25,7 +26,7 @@ const option: NextAuthConfig = {
     Credentials({
       credentials: {},
       authorize: async (credentials) => {
-        const { email, password } = userObject.parse(credentials);
+        const { email, password, rememberMe } = userObject.parse(credentials);
         await dbConnect()
         const user = await UserModel.findOne({ email });
         if (!user) {
@@ -40,6 +41,7 @@ const option: NextAuthConfig = {
           fullName: user.fullName,
           username: user.username,
           role: user.role,
+          rememberMe: rememberMe,
         } as unknown as User;
       },
     }),
@@ -61,13 +63,13 @@ const option: NextAuthConfig = {
             await newUser.save();
 
             if (newUser) {
-              token.id = newUser._id.toString();
+              token.id = (newUser._id as string).toString();
               token.email = email;
               token.fullName = fullName;
               token.username = username;
             }
           } else {
-            token.id = existingUser._id.toString();
+            token.id = (existingUser._id as string).toString();
             token.email = email;
             token.fullName = existingUser?.fullName;
             token.username = existingUser?.username;
@@ -82,9 +84,10 @@ const option: NextAuthConfig = {
           token.fullName = user.fullName;
           token.username = user.username;
           token.role = user.role;
-          token.expires = account?.rememberMe
+          const expires = account?.rememberMe
           ? Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
           : Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+          token.expires = new Date(expires)
         }
       }
 
@@ -97,7 +100,7 @@ const option: NextAuthConfig = {
         session.user.fullName = token.fullName;
         session.user.username = token.username;
         session.user.role = token.role;
-        session.expires = token.expires;
+        session.expires = token.expires as Date & string;
       }
 
       return session;

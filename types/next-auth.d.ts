@@ -32,6 +32,7 @@ declare module 'next-auth/jwt' {
     fullName: string;
     username: string;
     password?: string;
-    role: "worker" | "employer"
+    role: "worker" | "employer";
+    expires: Date;
   }
 }
