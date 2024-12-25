@@ -1,25 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose, {Mongoose} from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
-const url = process.env.MONGODB_URI!
+const url = process.env.MONGODB_URI;
 
-interface Cached {
-  conn: Mongoose | null,
-  promise: Promise<Mongoose> | null
+if (!url) {
+  throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-let cached: Cached = (global as any).mongoose
+interface Cached {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+}
+
+// Add connection cache to the global object
+let cached: Cached = (global as any).mongoose;
 if (!cached) {
-  cached = (global as any).moongoose = { conn: null, promise: null}
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
 export default async function dbConnect(): Promise<Mongoose> {
-  if (cached.conn) return cached.conn
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(url).then((mongoose) => {return mongoose});
-  }
-  cached.conn = await cached.promise
-  return cached.conn
-}
+  if (cached.conn) return cached.conn; // Return existing connection
 
-mongoose.connect(url).then(() => console.log("MongoDB connected.")).catch((error) => console.log(error));
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(url, { useNewUrlParser: true, useUnifiedTopology: true }) // Connection options for stability
+      .then((mongoose) => {
+        console.log("MongoDB connected.");
+        return mongoose;
+      })
+      .catch((error) => {
+        console.error("MongoDB connection error:", error);
+        throw error;
+      });
+  }
+
+  cached.conn = await cached.promise; // Wait for connection
+  return cached.conn;
+}
