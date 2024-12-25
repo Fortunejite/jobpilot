@@ -23,7 +23,7 @@ export default async function dbConnect(): Promise<Mongoose> {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(url, { useNewUrlParser: true, useUnifiedTopology: true }) // Connection options for stability
+      .connect(url as string, { useNewUrlParser: true, useUnifiedTopology: true }) // Assert `url` as a string
       .then((mongoose) => {
         console.log("MongoDB connected.");
         return mongoose;
