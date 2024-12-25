@@ -3,12 +3,14 @@ import Worker from '@/models/worker';
 import User from '@/models/user';
 import { NextRequest, NextResponse } from 'next/server';
 
+type tParams = Promise<{ id: string }>
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: tParams }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json({ message: 'Worker ID is required' }, { status: 400 });
     }
@@ -29,10 +31,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: tParams }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json({ message: 'Worker ID is required' }, { status: 400 });
     }

@@ -3,12 +3,14 @@ import Employer from '@/models/employer';
 import User from '@/models/user';
 import { NextRequest, NextResponse } from 'next/server';
 
+type tParams = Promise<{ id: string }>
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: tParams },
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json({ message: 'ID is required' }, { status: 400 });
     }
@@ -33,9 +35,9 @@ export async function GET(
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } },) {
+export async function PATCH(request: NextRequest, { params }: { params: tParams },) {
   try {
-    const { id: employerId } = params;
+    const { id: employerId } = await params;
     if (!employerId) {
       return NextResponse.json(
         { message: 'Employer ID is required' },

@@ -9,12 +9,14 @@ type DataContent = {
   resume: number;
 };
 
+type tParams = Promise<{ id: string }>
+
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: tParams },
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json(
         { message: 'Job ID is required' },
@@ -52,7 +54,7 @@ export async function POST(
       { message: 'Job already applied' },
       { status: 401 },
     );
-    
+
     await Job.findByIdAndUpdate(id, {
       $push: {
         applicatiions: {

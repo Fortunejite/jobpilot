@@ -2,14 +2,16 @@ import dbConnect from '@/lib/mongodb';
 import User from '@/models/user';
 import { NextRequest, NextResponse } from 'next/server';
 
+type tParams = Promise<{ id: string }>
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: tParams }
 ) {
   try {
     await dbConnect();
 
-    const userId = params.id;
+    const userId = (await params).id;
     if (!userId) {
       return NextResponse.json({ message: 'User ID is required' }, { status: 400 });
     }
