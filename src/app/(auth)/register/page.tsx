@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styles from './page.module.css';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { boolean, object, string, ZodError } from 'zod';
 import { toast } from 'react-toastify';
 import { signIn } from 'next-auth/react';
@@ -81,6 +81,32 @@ const Signup = () => {
       setLoading(false);
       console.log(e);
       toast.error('An error occured');
+    }
+    try {
+      setLoading(true);
+      const data = validateCredentials(formData);
+      if (!data) return
+      if (data.password != formData.confirmPassword) {
+        toast.error('Passowrds do not match');
+        return;
+      }
+      await axios.post('/api/user', data);
+      signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: data.isWorker ? '/' : '/welcome',
+      });
+      toast.success("Signin successfull");
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return toast.error(e.response?.data.message || 'An error occured');
+      } else {
+        console.log(e);
+        return toast.error('An error occured');
+      }
+    } finally {
+      setLoading(false);
+
     }
   };
 

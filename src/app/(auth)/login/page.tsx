@@ -8,6 +8,7 @@ import { object, string, ZodError } from 'zod';
 import { toast } from 'react-toastify';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 
 const Login = () => {
   const [formData, setformData] = useState({
@@ -42,23 +43,27 @@ const Login = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    const data = validateCredentials(formData);
-    if (!data) return setLoading(false);
-    const res = await signIn('credentials', {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-      rememberMe: formData.rememberMe,
-    });
-    if (res?.error) {
-      toast.error('Invalid credentials');
+    try {
+      const data = validateCredentials(formData);
+      if (!data) return setLoading(false);
+      await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+        rememberMe: formData.rememberMe,
+      });
+      toast.success('Signin successfull');
+      router.push('/');
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return toast.error(e.response?.data.message || 'An error occured');
+      } else {
+        console.log(e);
+        return toast.error('An error occured');
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-    toast.success('Signin successfull');
-    router.push('/');
-    setLoading(false);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
