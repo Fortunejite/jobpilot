@@ -1,3 +1,15 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+  gap: 16px;
+  height: calc(100% - 64px);
+  width: 100%;
+}
+
+.container a {
+  color: var(--primary);
+}
 
 .accountType {
   background-color: whitesmoke;
@@ -89,4 +101,7 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
 }

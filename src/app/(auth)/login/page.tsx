@@ -67,7 +67,7 @@ const Login = () => {
     setformData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
   return (
-    <>
+    <main className={styles.container}>
       <h1>Sign In</h1>
       <p>
         Dont have an account? <Link href={'/register'}>Create Account</Link>
@@ -122,7 +122,7 @@ const Login = () => {
           )}
         </button>
       </form>
-    </>
+    </main>
   );
 };
 

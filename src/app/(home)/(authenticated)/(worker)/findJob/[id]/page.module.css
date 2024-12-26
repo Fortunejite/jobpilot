@@ -1,4 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+}
+
 .container main{
+  flex: 1;
   padding: 16px 64px;
   display: flex;
   flex-flow: column wrap;
@@ -72,7 +79,6 @@
 
 .top .right div {
   padding: 8px;
-  background-color: var(--accent);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -94,6 +100,12 @@
   border: none;
   cursor: pointer;
 }
+
+.top .right .applied{
+  background-color: rgb(0, 164, 0);
+  color: #ffffff;
+}
+
 .top .right .favourite {
   stroke: none;
   fill: var(--primary);
@@ -178,7 +190,6 @@
   background-color: var(--grey);
   color:  rgb(0, 164, 0);
   border-radius: 4px;
-  font-weight: 600;
 }
 
 .overview svg {

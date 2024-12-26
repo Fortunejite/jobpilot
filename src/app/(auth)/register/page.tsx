@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  ArrowRight,
-  Building2,
-  CircleUser,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
+import { ArrowRight, Building2, CircleUser, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styles from './page.module.css';
@@ -14,20 +8,23 @@ import axios, { AxiosError } from 'axios';
 import { boolean, object, string, ZodError } from 'zod';
 import { toast } from 'react-toastify';
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
 const Signup = () => {
+  const searchParams = useSearchParams()
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [password2Visible, setPassword2Visible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const role = searchParams.get('role')
   const [formData, setformData] = useState({
-    isWorker: true,
+    isWorker: role && role.toLowerCase() === 'e' ? false : true,
     fullName: '',
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
-
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password2Visible, setPassword2Visible] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const validateCredentials = (formData: unknown) => {
     const credentialsParser = object({
@@ -59,7 +56,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const data = validateCredentials(formData);
-      if (!data) return
+      if (!data) return;
       if (data.password != formData.confirmPassword) {
         toast.error('Passowrds do not match');
         return;
@@ -71,7 +68,7 @@ const Signup = () => {
         rememberMe: true,
         callbackUrl: data.isWorker ? '/' : '/welcome',
       });
-      toast.success("Signin successfull");
+      toast.success('Signin successfull');
     } catch (e) {
       if (e instanceof AxiosError) {
         return toast.error(e.response?.data.message || 'An error occured');
@@ -81,7 +78,6 @@ const Signup = () => {
       }
     } finally {
       setLoading(false);
-
     }
   };
 
@@ -89,7 +85,7 @@ const Signup = () => {
     setformData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
   return (
-    <>
+    <main className={styles.container}>
       <h1>Create account</h1>
       <p>
         Already have an account? <Link href={'/login'}>Log in</Link>
@@ -196,7 +192,7 @@ const Signup = () => {
           )}
         </button>
       </form>
-    </>
+    </main>
   );
 };
 

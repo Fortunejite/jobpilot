@@ -155,7 +155,7 @@ const JobTable = ({
                       </p>
                       <div>
                         <span>
-                          {job.type} . {timeRemaining}
+                          {job.type} • {timeRemaining}
                         </span>
                       </div>
                     </div>

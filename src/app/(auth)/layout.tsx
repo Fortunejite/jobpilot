@@ -13,7 +13,7 @@ export default async function RootLayout({
         <header className={styles.logo}>
           <BriefcaseBusiness height={32} width={32} /> <h2>Jobpilot</h2>
         </header>
-        <main className={styles.main}>{children}</main>
+        {children}
       </div>
       <div className={styles.background}>
         <Image src={'/logoBackground.png'} alt='Background' fill priority />

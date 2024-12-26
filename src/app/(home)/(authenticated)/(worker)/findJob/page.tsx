@@ -12,6 +12,7 @@ import Pagination from '@/components/pagination/pagination';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import Footer from '@/components/DarkFooter/page';
 
 type JobWithCompanyDetails = IJob & { companyId: IEmployerDocument } & {
   _id: string;
@@ -143,7 +144,7 @@ const FindJob = () => {
       }
     };
     if (session?.data?.user?._id) fetchJobs();
-  }, [currentPage, jobs, session, userId]);
+  }, [session]);
 
   return (
     <div className={styles.container}>
@@ -195,6 +196,7 @@ const FindJob = () => {
           changePage={changePage}
         />
       )}
+      <Footer />
     </div>
   );
 };

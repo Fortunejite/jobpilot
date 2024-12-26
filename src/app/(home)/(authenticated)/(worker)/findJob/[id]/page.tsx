@@ -16,6 +16,7 @@ import {
   Layers,
   Map,
   Timer,
+  UsersRound,
   WalletMinimal,
 } from 'lucide-react';
 import axios, { AxiosError } from 'axios';
@@ -26,6 +27,7 @@ import Modal from '@/components/modal/modal';
 import ReactMde, { Command } from 'react-mde';
 import ReactMarkdown from 'react-markdown';
 import { IWorkerDocument } from '@/models/worker';
+import Footer from '@/components/DarkFooter/page';
 
 type Params = {
   id: string;
@@ -227,8 +229,8 @@ const FindJob = () => {
                   <ArrowRight />
                 </button>
               ) : (
-                <button>
-                  <span>Applied!</span>
+                <button className={styles.applied}>
+                  <span>Already Applied</span>
                 </button>
               )}
             </div>
@@ -302,6 +304,11 @@ const FindJob = () => {
                       <span>Education</span>
                       <p>{job.education}</p>
                     </div>
+                    <div className={styles.item}>
+                      <UsersRound />
+                      <span>Total Vacancies</span>
+                      <p>{job.vacancies}</p>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -321,6 +328,7 @@ const FindJob = () => {
           </div>
         </main>
       ) : null}
+      <Footer />
       <Modal
         isLoading={loading}
         isOpen={isOpen}

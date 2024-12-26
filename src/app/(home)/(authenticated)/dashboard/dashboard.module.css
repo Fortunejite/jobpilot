@@ -25,10 +25,13 @@
 
 .tabs {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .tabs span {
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 .tabs li {
@@ -37,6 +40,11 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+}
+
+.tabs li:hover {
+  background-color: var(--grey);
+  color: var(--text);
 }
 
 .active {
@@ -97,9 +105,12 @@
 
 .drawer ul {
   list-style: none;
-  
 }
 
+.drawer ul li:hover {
+  background-color: var(--foreground);
+  color: var(--text);
+}
 
 .drawer ul .active {
 border-left: 4px solid var(--primary);
