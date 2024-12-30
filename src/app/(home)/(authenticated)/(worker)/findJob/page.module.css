@@ -155,5 +155,6 @@
 @media (max-width: 768px) {
   .job {
     flex: 1 1 100%;
+  max-width: 100%;
   }
 }

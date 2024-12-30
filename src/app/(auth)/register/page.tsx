@@ -61,7 +61,7 @@ const Signup = () => {
         toast.error('Passowrds do not match');
         return;
       }
-      await axios.post('/api/user', data);
+      await axios.post('/api/users', data);
       signIn('credentials', {
         email: formData.email,
         password: formData.password,

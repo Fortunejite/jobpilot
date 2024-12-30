@@ -5,7 +5,7 @@ import NextAuth from 'next-auth';
 import type { NextAuthConfig, User } from 'next-auth';
 import { compare } from 'bcrypt';
 import { object, string } from 'zod';
-import UserModel from './models/user';
+import UserModel from './models/User';
 import dbConnect from './lib/mongodb';
 
 const userObject = object({

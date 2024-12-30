@@ -1,5 +1,5 @@
 import dbConnect from '@/lib/mongodb';
-import Worker from '@/models/worker';
+import Worker from '@/models/Worker';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'No workers found' }, { status: 404 });
     }
 
-    return NextResponse.json({ data: workers }, { status: 200 });
+    return NextResponse.json(workers, { status: 200 });
 
   } catch (error) {
     console.error('GET /workers error:', error);

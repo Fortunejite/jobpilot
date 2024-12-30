@@ -1,4 +1,4 @@
-import { model, Model, models, Schema } from 'mongoose';
+import { model, Model, models, Document, Schema } from 'mongoose';
 
 export interface IJob {
   companyId?: Schema.Types.ObjectId;
@@ -13,16 +13,12 @@ export interface IJob {
   type: 'Full Time' | 'Intern' | 'Part Time' | 'Contractual' | 'FreeLance';
   vacancies: number;
   expire: Date;
-  country: string;
+  locationA: string;
   benefits: string[];
   description: string;
   applyOn: 'jobpilot' | 'email' | 'other';
   skills: string[];
-  applicatiions: {
-    userId: Schema.Types.ObjectId;
-    coverLetter: string;
-    resume: string;
-  }[];
+  categoryId: Schema.Types.ObjectId | string;
 }
 
 export interface IJobDocument extends IJob, Document {}
@@ -31,7 +27,7 @@ const jobSchema: Schema<IJobDocument> = new Schema(
   {
     companyId: {
       type: Schema.Types.ObjectId,
-      ref: 'Employer',
+      ref: 'Company',
       required: true,
     },
     title: {
@@ -78,7 +74,7 @@ const jobSchema: Schema<IJobDocument> = new Schema(
       type: Date,
       required: true,
     },
-    country: {
+    locationA: {
       type: String,
       required: true,
     },
@@ -98,19 +94,11 @@ const jobSchema: Schema<IJobDocument> = new Schema(
       type: [String],
       required: true,
     },
-    applicatiions: [
-      {
-        userId: {
-          type: Schema.Types.ObjectId,
-        },
-        coverLetter: {
-          type: String,
-        },
-        resume: {
-          type: String,
-        },
-      },
-    ],
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
   },
   { timestamps: true },
 );

@@ -1,0 +1,71 @@
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--text)
+}
+
+.entry {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  flex: 1 calc(50% - 8px);
+}
+
+.entry input, .entry select {
+  border-radius: 4px;
+  border: 1px solid grey;
+  padding: 1rem;
+}
+
+.entry select option:first-child {
+  color: var(--foreground);
+}
+
+.entry div {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  gap: 8px;
+  border: 1px solid grey;
+  padding: 1rem;
+}
+
+.entry div .icon {
+  color: var(--primary);
+}
+.entry div input {
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+.entry div input:focus {
+  outline: none;
+}
+
+.entry select option:first-child {
+  color: var(--foreground);
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border-radius: 4px; 
+  padding: 16px;
+  border: none;
+  background-color: var(--primary);
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.back {
+  background-color: var(--accent);
+  color: var(--primary);
+}

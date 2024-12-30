@@ -23,7 +23,6 @@ interface IWorker {
   links: {
     [x: string]: string;
   };
-  favouriteJobs : string[]
 }
 
 export interface IWorkerDocument extends IWorker, Document {}
@@ -91,9 +90,6 @@ const workerSchema: Schema<IWorkerDocument> = new Schema(
     links: {
       type: Map,
       of: String,
-    },
-    favouriteJobs: {
-      type: [String],
     },
   },
   { timestamps: true },

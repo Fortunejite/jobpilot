@@ -1,7 +1,6 @@
-import { IEmployerDocument } from '@/models/employer';
-import { IJobDocument } from '@/models/job';
+import { IJobDocument } from '@/models/Job';
 import axios, { AxiosError } from 'axios';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './jobTable.module.css';
 import {
   CircleCheck,
@@ -12,18 +11,18 @@ import {
   UsersRound,
 } from 'lucide-react';
 import Pagination from '../pagination/pagination';
+import { toast } from 'react-toastify';
+import { formatDate, getRemainingDays } from '@/lib/dates';
 
 interface Props {
   limit: number;
   pagination: boolean;
-  employer: null | IEmployerDocument;
-  jobs: IJobDocument[] | null;
-  setJobs: Dispatch<SetStateAction<IJobDocument[] | null>>;
-  userId: string;
-  count: number;
-  currentPage: number;
-  setCurrentPage: Dispatch<SetStateAction<number>>;
+  companyId: string;
 }
+
+type JobWithApplicationInfo = IJobDocument & {
+  applications: number;
+};
 
 const DropDown = ({
   isOpen,
@@ -59,18 +58,52 @@ const DropDown = ({
   );
 };
 
-const JobTable = ({
-  limit,
-  pagination,
-  jobs,
-  setJobs,
-  userId,
-  count,
-  currentPage,
-  setCurrentPage,
-}: Props) => {
-  const totalPages = Math.ceil(count / limit);
+const JobTable = ({ limit, pagination, companyId }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<null | number>(null);
+
+  const [jobCount, setJobCount] = useState(0);
+  const [jobs, setJobs] = useState<
+    JobWithApplicationInfo[] | null
+  >(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(jobCount / limit);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jobPromise = axios.get(`/api/jobs?companyId=${companyId}`);
+        const jobCountPromise = axios.get(
+          `/api/stats/jobs?companyId=${companyId}`,
+        );
+
+        const [jobRes, jobCountRes] = await Promise.all([
+          jobPromise,
+          jobCountPromise,
+        ]);
+        const updatedJobs = await Promise.all(
+          jobRes.data.map(async (job: JobWithApplicationInfo) => {
+            const { data } = await axios.get(
+              `/api/stats/applications/${job._id}`,
+            );
+            job.applications = data.count;
+            return job;
+          }),
+        );
+        setJobs(updatedJobs);
+        setJobCount(jobCountRes.data.count);
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          toast.error(e.response?.data.message);
+          console.log(e);
+        } else {
+          toast.error('An error occured');
+          console.log(e);
+        }
+      }
+    };
+    getData();
+  }, []);
 
   const changePage = async (newPage: number) => {
     try {
@@ -78,7 +111,7 @@ const JobTable = ({
       if (page < 1) page = 1;
       if (page > totalPages) page = totalPages;
       const res = await axios.get(
-        `/api/job?page=${page}&userId=${userId}&limit=${limit}`,
+        `/api/jobs?page=${page}&companyId=${companyId}&limit=${limit}`,
       );
       console.log(res.data);
 
@@ -106,22 +139,6 @@ const JobTable = ({
     window.addEventListener('click', closeDropdown);
     return () => window.removeEventListener('click', closeDropdown);
   }, []);
-
-  const getRemainingDays = (date: Date) => {
-    const currentDate = new Date();
-    const timeDifference = date.getTime() - currentDate.getTime();
-
-    const daysRemaining = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-    return daysRemaining > 0 ? daysRemaining : 0;
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
   if (jobs && jobs.length > 0)
     return (
@@ -172,8 +189,7 @@ const JobTable = ({
                   </td>
                   <td>
                     {' '}
-                    <UsersRound />{' '}
-                    <span>{job.applicatiions?.length} Applications</span>
+                    <UsersRound /> <span>{job.applications} Applications</span>
                   </td>
                   <td className={styles.actions}>
                     <button>View Applications</button>

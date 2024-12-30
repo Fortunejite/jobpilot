@@ -4,30 +4,40 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { Bookmark, MapPin, Search, SlidersVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { IJob } from '@/models/job';
 import axios, { AxiosError } from 'axios';
-import { useSession } from 'next-auth/react';
-import { IEmployerDocument } from '@/models/employer';
 import Pagination from '@/components/pagination/pagination';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Footer from '@/components/DarkFooter/page';
-
-type JobWithCompanyDetails = IJob & { companyId: IEmployerDocument } & {
-  _id: string;
-};
+import { JobWithCompanyInfo, SavedJobWithJobInfo } from '@/components/types';
 
 const Job = ({
   job,
-  isFavourite,
-  toggleBookmark,
+  defaultIsFavourite,
 }: {
-  job: JobWithCompanyDetails;
-  isFavourite: boolean;
-  toggleBookmark: () => void;
+  job: JobWithCompanyInfo;
+  defaultIsFavourite: boolean;
 }) => {
   const router = useRouter();
+  const [isFavourite, setIsFavourite] = useState(defaultIsFavourite);
+  
+  const toggleBookmark = (id: string) => {
+
+    setIsFavourite(prev => !prev)
+
+    try {
+      if (isFavourite) axios.delete(`/api/saved-jobs/${id}`);
+      else axios.post('/api/saved-jobs/', { jobId: id });
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return toast.error(e.response?.data.message || 'An error occured');
+      } else {
+        console.log(e);
+        return toast.error('An error occured');
+      }
+    }
+  };
 
   const handleJobClick = () => {
     router.push(`/findJob/${job._id}`);
@@ -49,11 +59,11 @@ const Job = ({
         <div className={styles.info}>
           <p className={styles.companyName}>{job.companyId.companyName}</p>
           <p>
-            <MapPin width={18} height={18} /> {job.country}
+            <MapPin width={18} height={18} /> {job.locationA}
           </p>
         </div>
         <Bookmark
-          onClick={toggleBookmark}
+          onClick={() => toggleBookmark(job._id)}
           className={isFavourite ? styles.favourite : ''}
           height={24}
         />
@@ -64,22 +74,20 @@ const Job = ({
 
 const FindJob = () => {
   const [search, setSearch] = useState('');
-  const [jobs, setJobs] = useState<null | JobWithCompanyDetails[]>(null);
+  const [jobs, setJobs] = useState<null | JobWithCompanyInfo[]>(null);
+  const [favouriteJobs, setFavouriteJobs] = useState<SavedJobWithJobInfo[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [count, setCount] = useState(0);
-  const [favouriteJobs, setFavouriteJobs] = useState<string[]>([]);
 
   const limit = 10;
   const totalPages = Math.ceil(count / limit);
-  const session = useSession();
-  const userId = session?.data?.user?._id;
 
   const changePage = async (newPage: number) => {
     try {
       let page = newPage;
       if (page < 1) page = 1;
       if (page > totalPages) page = totalPages;
-      const res = await axios.get(`/api/job?page=${page}&limit=${limit}`);
+      const res = await axios.get(`/api/jobs?page=${page}&limit=${limit}`);
       console.log(res.data);
 
       setJobs(res.data.data);
@@ -95,45 +103,23 @@ const FindJob = () => {
     }
   };
 
-  const toggleBookmark = (id: string) => {
-    if (!favouriteJobs) return;
-
-    const isFavourite = favouriteJobs.includes(id);
-    let jobs;
-    if (isFavourite) {
-      jobs = favouriteJobs.filter((jobId) => jobId != id);
-    } else {
-      jobs = [...favouriteJobs, id];
-    }
-    setFavouriteJobs(jobs);
-
-    try {
-      axios.patch(`/api/workers/${userId}/favouriteJobs`, jobs);
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        return toast.error(e.response?.data.message || 'An error occured');
-      } else {
-        console.log(e);
-        return toast.error('An error occured');
-      }
-    }
-  };
-
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get(
-          `/api/job?page=${currentPage}&count=true&limit=${limit}`,
+        const jobPromise = axios.get(
+          `/api/jobs?page=${currentPage}&limit=${limit}`,
         );
-        setJobs(res.data.data);
-        console.log(jobs);
+        const jobCountPromise = axios.get(`/api/stats/`);
 
-        setCount(res.data.total || 0);
+        const [jobRes, jobCountRes] = await Promise.all([
+          jobPromise,
+          jobCountPromise,
+        ]);
 
-        const workerRes = await axios.get(
-          `/api/workers/${userId}/favouriteJobs`,
-        );
-        setFavouriteJobs(workerRes.data.data);
+        setJobs(jobRes.data);
+        setCount(jobCountRes.data.jobcount);
+        const savedJobsRes = await axios.get(`/api/saved-jobs`);
+        setFavouriteJobs(savedJobsRes.data);
       } catch (e) {
         if (e instanceof AxiosError) {
           return toast.error(e.response?.data.message || 'An error occured');
@@ -143,8 +129,10 @@ const FindJob = () => {
         }
       }
     };
-    if (session?.data?.user?._id) fetchJobs();
-  }, [session]);
+    fetchJobs();
+  }, []);
+
+  if (!favouriteJobs || !jobs) return null
 
   return (
     <div className={styles.container}>
@@ -182,8 +170,7 @@ const FindJob = () => {
               <Job
                 key={index}
                 job={job}
-                isFavourite={favouriteJobs.includes(job._id)}
-                toggleBookmark={() => toggleBookmark(job._id)}
+                defaultIsFavourite={(favouriteJobs.filter(favouriteJob => favouriteJob.jobId._id === job._id)).length > 0}
               />
             ))}
           </div>

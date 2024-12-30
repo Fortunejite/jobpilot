@@ -1,13 +1,12 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import styles from './page.module.css';
-import Link from 'next/link';
-import { IEmployerDocument } from '@/models/employer';
 import 'react-mde/lib/styles/css/react-mde-all.css';
+import styles from './page.module.css';
 import { useEffect, useState } from 'react';
-import { IJob } from '@/models/job';
+import { useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   ArrowRight,
   Bookmark,
@@ -21,21 +20,18 @@ import {
 } from 'lucide-react';
 import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { useSession } from 'next-auth/react';
 import { exprience } from '@/lib/data/workerInfo';
+import { formatDate } from '@/lib/dates';
 import Modal from '@/components/modal/modal';
+import { JobWithCompanyInfo, SavedJobWithJobInfo } from '@/components/types';
 import ReactMde, { Command } from 'react-mde';
 import ReactMarkdown from 'react-markdown';
-import { IWorkerDocument } from '@/models/worker';
+import { IWorkerDocument } from '@/models/Worker';
+import { IApplicationDocument } from '@/models/Application';
 import Footer from '@/components/DarkFooter/page';
 
 type Params = {
   id: string;
-};
-
-type JobWithCompanyDetails = IJob & { companyId: IEmployerDocument } & {
-  _id: string;
-  createdAt: string;
 };
 
 type DataContent = {
@@ -45,13 +41,18 @@ type DataContent = {
 
 const FindJob = () => {
   const params: Params = useParams();
-  const [job, setJob] = useState<null | JobWithCompanyDetails>(null);
+  const [job, setJob] = useState<null | JobWithCompanyInfo>(null);
   const [worker, setWorker] = useState<null | IWorkerDocument>(null);
-  const [favouriteJobs, setFavouriteJobs] = useState<string[]>([]);
+  const [favouriteJobs, setFavouriteJobs] = useState<
+    SavedJobWithJobInfo[] | null
+  >(null);
+  const [applications, setApplications] = useState<
+    IApplicationDocument[] | null
+  >(null);
+  const [isFavourite, setIsFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
-  const isFavourite = favouriteJobs.includes(job?._id || '');
   const [modalData, setModalData] = useState<DataContent>({
     coverLetter: '',
     resume: -1,
@@ -61,32 +62,59 @@ const FindJob = () => {
   const session = useSession();
   const userId = session?.data?.user?._id;
 
-  const applied = job?.applicatiions.filter(
-    (application) => application.userId.toString() === userId,
-  );
-
   useEffect(() => {
-    if (applied && applied.length > 0) {
-      setHasApplied(true);
-    }
-  }, [applied]);
+    if (!userId || !params?.id) return;
+
+    const fetchData = async () => {
+      try {
+        const [jobRes, applicationsRes, workerRes, savedJobsRes] =
+          await Promise.all([
+            axios.get(`/api/jobs/${params.id}`),
+            axios.get(`/api/applications/${params.id}`),
+            axios.get(`/api/workers/${userId}`),
+            axios.get(`/api/saved-jobs`),
+          ]);
+
+        setJob(jobRes.data);
+        setApplications(applicationsRes.data);
+        setWorker(workerRes.data);
+        setFavouriteJobs(savedJobsRes.data);
+
+        // Post-fetch updates
+        const hasApplied = applicationsRes.data.some(
+          (application: IApplicationDocument) =>
+            application.workerId === workerRes.data._id,
+        );
+        setHasApplied(hasApplied);
+
+        const isFav = savedJobsRes.data.some(
+          (favJob: SavedJobWithJobInfo) => favJob.jobId._id === jobRes.data._id,
+        );
+        setIsFavourite(isFav);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message || 'An error occurred');
+        } else {
+          console.error(error);
+          toast.error('An unexpected error occurred');
+        }
+      }
+    };
+
+    fetchData();
+  }, [userId, params?.id]);
+
+  if (!favouriteJobs || !applications || !worker || !job)
+    return <div>Loading</div>;
 
   const closeModal = () => setIsOpen(false);
 
   const toggleBookmark = (id: string) => {
-    if (!favouriteJobs) return;
-
-    const isFavourite = favouriteJobs.includes(id);
-    let jobs;
-    if (isFavourite) {
-      jobs = favouriteJobs.filter((jobId) => jobId != id);
-    } else {
-      jobs = [...favouriteJobs, id];
-    }
-    setFavouriteJobs(jobs);
+    setIsFavourite((prev) => !prev);
 
     try {
-      axios.patch(`/api/workers/${userId}/favouriteJobs`, jobs);
+      if (isFavourite) axios.delete(`/api/saved-jobs/${id}`);
+      else axios.post('/api/saved-jobs/', { jobId: id });
     } catch (e) {
       if (e instanceof AxiosError) {
         return toast.error(e.response?.data.message || 'An error occured');
@@ -94,53 +122,10 @@ const FindJob = () => {
         console.log(e);
         return toast.error('An error occured');
       }
+    } finally {
+      setIsFavourite((prev) => !prev);
     }
   };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(`/api/job/${params.id}`);
-        setJob(res.data);
-      } catch (e) {
-        if (e instanceof AxiosError) {
-          return toast.error(e.response?.data.message || 'An error occured');
-        } else {
-          console.log(e);
-          return toast.error('An error occured');
-        }
-      }
-    };
-
-    fetchData();
-  }, [params.id]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!userId) return;
-        const workerResponse = await axios.get(`/api/workers/${userId}`);
-        setWorker(workerResponse.data.data);
-        setFavouriteJobs(workerResponse.data.data.favouriteJobs || []);
-      } catch (e) {
-        if (e instanceof AxiosError) {
-          return toast.error(e.response?.data.message || 'An error occured');
-        } else {
-          console.log(e);
-          return toast.error('An error occured');
-        }
-      }
-    };
-
-    fetchData();
-  }, [session, userId]);
 
   const pickResume = (index: number) =>
     setModalData((prev) => ({ ...prev, resume: index }));
@@ -155,7 +140,11 @@ const FindJob = () => {
       if (modalData.coverLetter === '')
         return toast.error('Cover letter cannot be empty');
 
-      await axios.post(`/api/job/${job?._id}/apply`, modalData);
+      await axios.post(`/api/applications/`, {
+        jobId: job?._id,
+        coverLetter: modalData.coverLetter,
+        resume: worker.resume[modalData.resume].url,
+      });
       toast.success('Job applied successfully');
       setHasApplied(true);
       closeModal();
@@ -220,10 +209,12 @@ const FindJob = () => {
               </div>
             </div>
             <div className={styles.right}>
-              <div onClick={() => toggleBookmark(job._id)}>
+              <div onClick={() => toggleBookmark(job._id as string)}>
                 <Bookmark className={isFavourite ? styles.favourite : ''} />
               </div>
-              {!hasApplied ? (
+              {(new Date(job.expire) >= new Date()) ? (
+                <></>
+              ) : !hasApplied ? (
                 <button onClick={() => setIsOpen(true)}>
                   <span>Apply Now</span>
                   <ArrowRight />
@@ -252,7 +243,7 @@ const FindJob = () => {
                 <div className={styles.location}>
                   <Map />
                   <p className={styles.heading}>Job Location</p>
-                  <span>{job.country}</span>
+                  <span>{job.locationA}</span>
                 </div>
               </section>
               {job.benefits.length > 0 && (

@@ -1,16 +1,7 @@
-import { auth } from '@/auth';
-import WorkerDashboard from './workerDashboard';
-import EmployerDashboard from './employerDashboard';
+import { redirect } from 'next/navigation';
 
-const Dashboard = async () => {
-  const session = await auth();
-  const user = session?.user;
-
-  if (user?.role === 'worker') {
-    return <WorkerDashboard />;
-  } else {
-    return <EmployerDashboard />;
-  }
+const Dashboard = () => {
+  redirect('/dashboard/overview')
 };
 
 export default Dashboard;

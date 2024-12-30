@@ -6,7 +6,7 @@ export default async function Home() {
   
   return (
     <div className={styles.page}>
-      <main>Home PAge</main>
+      <main>Home Page</main>
       <Footer />
     </div>
   );

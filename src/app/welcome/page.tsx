@@ -7,11 +7,11 @@ import {
   UserRound,
 } from 'lucide-react';
 import styles from './page.module.css';
-import CompanyInfo from '@/components/welcome/companyInfo/companyInfo';
 import { useState } from 'react';
 import ProgressBar from '@/components/progressBar/progressBar';
-import { IEmployerDocument } from '@/models/employer';
+import { ICompanyDocument } from '@/models/Company';
 import { FileWithPath } from 'react-dropzone';
+import CompanyInfo from '@/components/welcome/companyInfo/CompanyInfo';
 import FoundingInfo from '@/components/welcome/foundingInfo/foundingInfo';
 import Socials from '@/components/welcome/socials/socials';
 import Contact from '@/components/welcome/contact/contact';
@@ -45,7 +45,7 @@ const formValidator = object({
 const Welcome = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [formData, setFormData] = useState<IEmployerDocument>({
+  const [formData, setFormData] = useState<ICompanyDocument>({
     companyName: '',
     email: '',
     phoneNumber: '',
@@ -59,7 +59,7 @@ const Welcome = () => {
     links: {},
     logo: '',
     banner: '',
-  } as unknown as IEmployerDocument);
+  } as unknown as ICompanyDocument);
   const [banner, setBanner] = useState<FileWithPath | undefined>(undefined);
   const [logo, setLogo] = useState<FileWithPath | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -137,7 +137,7 @@ const Welcome = () => {
         logoPromise,
         bannerPromise,
       ]);
-      await axios.post('/api/employer', {
+      await axios.post('/api/companies', {
         ...data,
         logo: logoUrl,
         banner: bannerUrl,

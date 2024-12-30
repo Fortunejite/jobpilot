@@ -102,14 +102,22 @@ const Navbar = () => {
     },
     {
       name: 'profile',
-      icon: <Image className={styles.avatar} src={pic} alt='Profile' height={32} width={32} />,
+      icon: (
+        <Image
+          className={styles.avatar}
+          src={pic}
+          alt='Profile'
+          height={32}
+          width={32}
+        />
+      ),
       onClick: () => signOut({ redirectTo: '/login' }),
     },
   ];
 
   const session = useSession();
   const user = session.data?.user;
-  const {toggleDrawer} = useDrawer()
+  const { toggleDrawer } = useDrawer();
 
   useEffect(() => {
     const getInfo = async () => {
@@ -117,11 +125,11 @@ const Navbar = () => {
 
       const url =
         user.role === 'employer'
-          ? `/api/employer/${user._id}`
+          ? `/api/companies/${user._id}`
           : `/api/workers/${user._id}`;
       try {
         const { data } = await axios.get(url);
-        
+
         const info = data.data;
         setPic(user.role === 'employer' ? info?.logo : info?.avatar);
       } catch (e) {
@@ -144,7 +152,14 @@ const Navbar = () => {
             if (link.role !== 'any' && user?.role !== link.role) return null;
             return (
               <Link key={link.name} href={link.link}>
-                <li className={link.link === pathname ? styles.active : ''}>
+                <li
+                  className={
+                    link.link === pathname ||
+                    link.link === `/${pathname.split('/')[1]}`
+                      ? styles.active
+                      : ''
+                  }
+                >
                   {link.name}
                 </li>
               </Link>
@@ -152,8 +167,8 @@ const Navbar = () => {
           })}
         </ul>
         <button className={styles.menuButton} onClick={toggleDrawer}>
-        <AlignJustify />
-      </button>
+          <AlignJustify />
+        </button>
       </nav>
       <div className={styles.bottomHeader}>
         <div className={styles.logo}>

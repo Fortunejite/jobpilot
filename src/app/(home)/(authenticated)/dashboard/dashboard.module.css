@@ -34,7 +34,7 @@
   /* font-weight: bold; */
 }
 
-.tabs li {
+.tabs li a{
   padding: 8px;
   display: flex;
   align-items: center;
@@ -116,7 +116,7 @@
 border-left: 4px solid var(--primary);
 color: var(--primary);
 }
-.drawer ul li {
+.drawer ul li a {
   margin: 16px 0;
   
   font-size: 18px;
