@@ -212,16 +212,18 @@ const FindJob = () => {
               <div onClick={() => toggleBookmark(job._id as string)}>
                 <Bookmark className={isFavourite ? styles.favourite : ''} />
               </div>
-              {(new Date(job.expire) >= new Date()) ? (
-                <></>
-              ) : !hasApplied ? (
+              {hasApplied ? (
+                <button className={styles.applied}>
+                  <span>Already Applied</span>
+                </button>
+              ) : new Date(job.expire) < new Date() ? (
+                <button className={styles.expired}>
+                  <span>Expired</span>
+                </button>
+              ) : (
                 <button onClick={() => setIsOpen(true)}>
                   <span>Apply Now</span>
                   <ArrowRight />
-                </button>
-              ) : (
-                <button className={styles.applied}>
-                  <span>Already Applied</span>
                 </button>
               )}
             </div>

@@ -19,7 +19,7 @@ export async function GET(
 
     await dbConnect();
     const applications = await Applicaton.find({ jobId: jobId }).populate(
-      'categoryId',
+      'jobId',
     );
 
     return NextResponse.json(applications, { status: 200 });

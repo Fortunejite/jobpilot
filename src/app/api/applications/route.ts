@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 
     const applicatiions = await Applicaton.find({ workerId: worker._id })
-      .populate('categoryId')
+      .populate('jobId')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
