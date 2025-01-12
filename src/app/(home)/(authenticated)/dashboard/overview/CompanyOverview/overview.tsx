@@ -29,7 +29,7 @@ const Overview = ({ userId }: OverviewProps) => {
       try {
         const companyPromise = axios.get(`/api/companies/${userId}`);
         const jobPromise = axios.get(`/api/jobs?userId=${userId}&limit=${5}`);
-        const openJobsPromise = axios.get('/api/stats/jobs?type=open');
+        const openJobsPromise = axios.get('/api/stats/jobs?status=open');
         const savedCanidatesPromise = axios.get('/api/stats/saved-workers');
 
         const [companyRes, jobRes, openJobs, savedCanidate] = await Promise.all(

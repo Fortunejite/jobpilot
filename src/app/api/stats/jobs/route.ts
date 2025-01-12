@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
       companyId: company._id,
       ...(status &&
         (status === 'open'
-          ? { expire: { $ge: { currentDate } } }
-          : { expire: { $lt: { currentDate } } })),
+          ? { expire: { $gt: currentDate } }
+          : { expire: { $lt: currentDate } })),
     };
 
     const count = await Job.countDocuments(query);
