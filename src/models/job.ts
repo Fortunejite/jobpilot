@@ -19,6 +19,8 @@ export interface IJob {
   applyOn: 'jobpilot' | 'email' | 'other';
   skills: string[];
   categoryId: Schema.Types.ObjectId | string;
+  applications: string[];
+  createdAt: Date;
 }
 
 export interface IJobDocument extends IJob, Document {}
@@ -97,6 +99,10 @@ const jobSchema: Schema<IJobDocument> = new Schema(
     categoryId: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
+      required: true,
+    },
+    applications: {
+      type: [String],
       required: true,
     },
   },

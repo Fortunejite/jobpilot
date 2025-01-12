@@ -20,10 +20,6 @@ interface Props {
   companyId: string;
 }
 
-type JobWithApplicationInfo = IJobDocument & {
-  applications: number;
-};
-
 const DropDown = ({
   isOpen,
   toggleDropdown,
@@ -63,7 +59,7 @@ const JobTable = ({ limit, pagination, companyId }: Props) => {
 
   const [jobCount, setJobCount] = useState(0);
   const [jobs, setJobs] = useState<
-    JobWithApplicationInfo[] | null
+  IJobDocument[] | null
   >(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -81,16 +77,7 @@ const JobTable = ({ limit, pagination, companyId }: Props) => {
           jobPromise,
           jobCountPromise,
         ]);
-        const updatedJobs = await Promise.all(
-          jobRes.data.map(async (job: JobWithApplicationInfo) => {
-            const { data } = await axios.get(
-              `/api/stats/applications/${job._id}`,
-            );
-            job.applications = data.count;
-            return job;
-          }),
-        );
-        setJobs(updatedJobs);
+        setJobs(jobRes.data);
         setJobCount(jobCountRes.data.count);
       } catch (e) {
         if (e instanceof AxiosError) {
@@ -189,7 +176,7 @@ const JobTable = ({ limit, pagination, companyId }: Props) => {
                   </td>
                   <td>
                     {' '}
-                    <UsersRound /> <span>{job.applications} Applications</span>
+                    <UsersRound /> <span>{job.applications.length} Applications</span>
                   </td>
                   <td className={styles.actions}>
                     <button>View Applications</button>
