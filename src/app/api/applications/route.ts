@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import dbConnect from '@/lib/mongodb';
 import Applicaton from '@/models/Application';
+import Job from '@/models/Job';
 import Worker from '@/models/Worker';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -91,8 +92,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const application = new Applicaton({ ...data, workerId: worker._id, status: 'Pending' });
+    const application = new Applicaton({
+      ...data,
+      workerId: worker._id,
+      status: 'Pending',
+    });
     await application.save();
+    await Job.findByIdAndUpdate(jobId, { $addToSet: { applications: application._id } });
 
     return NextResponse.json(
       { message: 'Job applied successfully' },
